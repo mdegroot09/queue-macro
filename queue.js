@@ -69,14 +69,15 @@ function toRad(Value)
 }
 
 function onEdit(e){
-
-  // Set a comment on the edited cell to indicate when it was changed.
-
   var range = e.range;
-  var sheet = range.getSheet();
-
-  redoFilter()
-  copyNames()
+  var columnOfCellEdited = range.getColumn();
+  var rowOfCellEdited = range.getRow();
+  
+  // only run with zip code or filters is changed
+  if (columnOfCellEdited === 2 && (rowOfCellEdited === 1 || rowOfCellEdited === 2)) { 
+    redoFilter()
+    copyNames()
+  }
 }
 
 function redoFilter() {
@@ -105,10 +106,10 @@ function clearFilters() {
   spreadsheet.getRange('B1').activate();
   
   // clear column h cells
-  spreadsheet.getRange('H1:H20').clear({contentsOnly: true, skipFilteredRows: true});
+  spreadsheet.getRange('H1:H20').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
-  spreadsheet.getRange('E1').clear({contentsOnly: true, skipFilteredRows: true})
+  spreadsheet.getRange('E1').clear({contentsOnly: true})
 };
 
 function copyNames(){
@@ -116,6 +117,7 @@ function copyNames(){
   spreadsheet.getRange('A4').activate();
   var currentCell = spreadsheet.getCurrentCell()
   spreadsheet.getRange('A4:A20').copyTo(spreadsheet.getRange('H1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  spreadsheet.getRange('H2').copyTo(spreadsheet.getRange('E1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
   return spreadsheet.getRange('H1').activate();
 }
 
