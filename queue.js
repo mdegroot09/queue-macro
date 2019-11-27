@@ -133,6 +133,9 @@ function updateAgentTimeStamp(){
     
     spreadsheet.getActiveRange().offset(0,3).activate() 
     spreadsheet.getActiveCell().setValue(new Date());
+    
+    // Sort Last Lead Received from oldest to youngest
+    spreadsheet.getActiveSheet().getFilter().sort(4, true);
   }
 }
 
