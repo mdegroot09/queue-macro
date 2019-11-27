@@ -93,10 +93,11 @@ function redoFilter() {
   var cell = SpreadsheetApp.getActiveSheet().getActiveCell();
   var val = cell.getValue();
   
-  var criteria = SpreadsheetApp.newFilterCriteria()
-  .whenNumberLessThanOrEqualTo(val)
-  .build();
+  var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
   spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(3, criteria);
+  
+  // Sort Last Lead Received from oldest to youngest
+  spreadsheet.getActiveSheet().getFilter().sort(4, true);
 };
 
 function clearFilters() {
