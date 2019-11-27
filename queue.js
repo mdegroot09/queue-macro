@@ -136,7 +136,11 @@ function updateAgentTimeStamp(){
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(4, true);
+    
+    copyNames()
   }
+  
+  spreadsheet.getRange('E1').activate()
 }
 
 function findAgent() {
