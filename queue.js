@@ -108,11 +108,6 @@ function ziploc(zip1, zip2) {
     spreadsheet.getRange('H1:H20').clear({contentsOnly: true, skipFilteredRows: true});
   };
   
-  function wyattTimeStamp(){
-    SpreadsheetApp.getActiveSheet().getRange('F2').setValue(new Date());
-    return copyNames()
-  }
-  
   function copyNames(){
     var spreadsheet = SpreadsheetApp.getActive();
     spreadsheet.getRange('A4').activate();
@@ -120,4 +115,18 @@ function ziploc(zip1, zip2) {
     spreadsheet.getRange('A4:A20').copyTo(spreadsheet.getRange('H1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
     return spreadsheet.getRange('H1').activate();
   }
+  
+  function updateAgentTimeStamp(){
+    var spreadsheet = SpreadsheetApp.getActive();
+    if(spreadsheet.getRange('E1').isBlank()){
+      return 
+    } else {
+      // get E1 value
+      // search E1 value in A column and set active cell
+      // go 3 columns to the right of new active cell 
+      SpreadsheetApp.getActiveSheet().getActiveCell().setValue(new Date());
+    }
+  }
+  
+  
   
