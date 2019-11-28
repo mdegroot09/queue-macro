@@ -72,12 +72,25 @@ function onEdit(e){
   var range = e.range;
   var columnOfCellEdited = range.getColumn();
   var rowOfCellEdited = range.getRow();
+  var spreadsheet = SpreadsheetApp.getActive();
   
   // only run with zip code or filters is changed
-  if (columnOfCellEdited === 2 && (rowOfCellEdited === 1 || rowOfCellEdited === 2)) { 
-    redoFilter()
-    copyNames()
-  }
+  if (columnOfCellEdited === 5 && (rowOfCellEdited === 3 || rowOfCellEdited === 4  || rowOfCellEdited === 6)) { 
+    if (rowOfCellEdited === 3 && spreadsheet.getRange('C4').isChecked()){
+      redoFilter()
+      copyNames()
+      //      lookupZip()
+    } else if (rowOfCellEdited === 4 && spreadsheet.getRange('C5').isChecked()){
+      redoFilter()
+      copyNames()
+      //      lookupCity()
+    } else if (rowOfCellEdited === 6){
+      redoFilter()
+      copyNames()
+    }
+  } else if (columnOfCellEdited === 3 && (rowOfCellEdited === 4 || rowOfCellEdited === 5)){
+    toggleCheckboxes(rowOfCellEdited)
+  }  
 }
 
 function redoFilter() {
@@ -85,49 +98,49 @@ function redoFilter() {
   
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('A4').activate();
-  spreadsheet.getRange('A4:D11').createFilter();
+  spreadsheet.getRange('D8').activate();
+  spreadsheet.getRange('D8:G15').createFilter();
   
-  // Get Radius in B2
-  spreadsheet.getRange('B2').activate();
+  // Get Radius in C2
+  spreadsheet.getRange('E6').activate();
   var cell = SpreadsheetApp.getActiveSheet().getActiveCell();
   var val = cell.getValue();
   
   var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
-  spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(3, criteria);
+  spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(6, criteria);
   
   // Sort Last Lead Received from oldest to youngest
-  spreadsheet.getActiveSheet().getFilter().sort(4, true);
+  spreadsheet.getActiveSheet().getFilter().sort(7, true);
 };
 
 function clearFilters() {
   var spreadsheet = SpreadsheetApp.getActive();
   var sheet = spreadsheet.getActiveSheet();
   spreadsheet.getActiveSheet().getFilter().remove();
-  spreadsheet.getRange('B1').activate();
+  spreadsheet.getRange('E5').activate();
   
   // clear column h cells
-  spreadsheet.getRange('H1:H20').clear({contentsOnly: true, skipFilteredRows: false});
+  spreadsheet.getRange('K1:K25').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
-  spreadsheet.getRange('E1').clear({contentsOnly: true})
+  spreadsheet.getRange('G5').clear({contentsOnly: true})
 };
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('A4').activate();
+  spreadsheet.getRange('D8').activate();
   var currentCell = spreadsheet.getCurrentCell()
-  spreadsheet.getRange('A4:A20').copyTo(spreadsheet.getRange('H1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('H2').copyTo(spreadsheet.getRange('E1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
-  return spreadsheet.getRange('H1').activate();
+  spreadsheet.getRange('D8:D24').copyTo(spreadsheet.getRange('K1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  spreadsheet.getRange('K2').copyTo(spreadsheet.getRange('G5'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  return spreadsheet.getRange('G5').activate();
 }
 
 function updateAgentTimeStamp(){
   var spreadsheet = SpreadsheetApp.getActive();
-  if(spreadsheet.getRange('E1').isBlank()){
+  if(spreadsheet.getRange('G5').isBlank()){
     return 
   } else {
-    spreadsheet.getRange('E1').activate()
+    spreadsheet.getRange('G5').activate()
     
     findAgent()
     
@@ -135,20 +148,69 @@ function updateAgentTimeStamp(){
     spreadsheet.getActiveCell().setValue(new Date());
     
     // Sort Last Lead Received from oldest to youngest
-    spreadsheet.getActiveSheet().getFilter().sort(4, true);
+    spreadsheet.getActiveSheet().getFilter().sort(5, true);
     
     copyNames()
   }
   
-  spreadsheet.getRange('E1').activate()
+  spreadsheet.getRange('G5').activate()
 }
 
 function findAgent() {
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('A5').activate()
-  while (spreadsheet.getActiveRange().getValue() !== spreadsheet.getRange('E1').getValue()){
+  spreadsheet.getRange('D9').activate()
+  while (spreadsheet.getActiveRange().getValue() !== spreadsheet.getRange('H1').getValue()){
     spreadsheet.getActiveRange().offset(1,0).activate()
   }
 }
 
+function toggleCheckboxes(rowOfCellEdited){
+  var spreadsheet = SpreadsheetApp.getActive();
+  if (rowOfCellEdited === 4){
+    if (spreadsheet.getRange('C4').isChecked()){
+      spreadsheet.getRange('C3').setValue(1)
+      lightenZip()
+      spreadsheet.getRange('C5').setValue(false)
+    } else {
+      spreadsheet.getRange('C3').setValue(2)
+      lightenCity()
+      spreadsheet.getRange('C5').setValue(true)
+    }
+  } else {
+    if (spreadsheet.getRange('C5').isChecked()){
+      lightenCity()
+      spreadsheet.getRange('C4').setValue(false)
+      spreadsheet.getRange('C3').setValue(3)
+    } else {
+      spreadsheet.getRange('C3').setValue(4)
+      lightenZip()
+      spreadsheet.getRange('C4').setValue(true)
+    }
+  }
+} 
 
+//function lookupCity() {
+//  var spreadsheet = SpreadsheetApp.getActive();
+//  spreadsheet.getRange('E4').activate();
+//  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D345,3,false)');
+//}
+//
+//function lookupZip(){
+//  var spreadsheet = SpreadsheetApp.getActive();
+//  spreadsheet.getRange('E5').activate();
+//  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B345,2,false)'); 
+//}
+
+function lightenCity() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('D4:E4').setFontColor('#cccccc')
+  spreadsheet.getRange('D5:E5').setFontColor('#000000')
+  spreadsheet.getRange('E5').activate()
+}
+
+function lightenZip() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('D5:E5').setFontColor('#cccccc')
+  spreadsheet.getRange('D4:E4').setFontColor('#000000')
+  spreadsheet.getRange('E4').activate()
+}
