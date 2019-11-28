@@ -159,7 +159,7 @@ function updateAgentTimeStamp(){
 function findAgent() {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D9').activate()
-  while (spreadsheet.getActiveRange().getValue() !== spreadsheet.getRange('H1').getValue()){
+  while (spreadsheet.getActiveRange().getValue() !== spreadsheet.getRange('G5').getValue()){
     spreadsheet.getActiveRange().offset(1,0).activate()
   }
 }
@@ -168,11 +168,9 @@ function toggleCheckboxes(rowOfCellEdited){
   var spreadsheet = SpreadsheetApp.getActive();
   if (rowOfCellEdited === 4){
     if (spreadsheet.getRange('C4').isChecked()){
-      spreadsheet.getRange('C3').setValue(1)
       lightenZip()
       spreadsheet.getRange('C5').setValue(false)
     } else {
-      spreadsheet.getRange('C3').setValue(2)
       lightenCity()
       spreadsheet.getRange('C5').setValue(true)
     }
@@ -180,9 +178,7 @@ function toggleCheckboxes(rowOfCellEdited){
     if (spreadsheet.getRange('C5').isChecked()){
       lightenCity()
       spreadsheet.getRange('C4').setValue(false)
-      spreadsheet.getRange('C3').setValue(3)
     } else {
-      spreadsheet.getRange('C3').setValue(4)
       lightenZip()
       spreadsheet.getRange('C4').setValue(true)
     }
