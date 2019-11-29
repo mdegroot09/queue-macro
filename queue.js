@@ -152,7 +152,7 @@ function updateAgentTimeStamp(){
     spreadsheet.getActiveCell().setValue(new Date());
     
     // Sort Last Lead Received from oldest to youngest
-    spreadsheet.getActiveSheet().getFilter().sort(5, true);
+    spreadsheet.getActiveSheet().getFilter().sort(7, true);
     
     copyNames()
   }
