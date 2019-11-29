@@ -75,15 +75,19 @@ function onEdit(e){
   var spreadsheet = SpreadsheetApp.getActive();
   
   // only run with zip code or filters is changed
-  if (columnOfCellEdited === 5 && (rowOfCellEdited === 3 || rowOfCellEdited === 4  || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 3 && spreadsheet.getRange('C4').isChecked()){
+  if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
+    if (rowOfCellEdited === 4 && spreadsheet.getRange('C4').isChecked()){
       redoFilter()
       copyNames()
-      //      lookupZip()
-    } else if (rowOfCellEdited === 4 && spreadsheet.getRange('C5').isChecked()){
+      var zip = lookupZip()
+      spreadsheet.getRange('E5').setValue(zip)
+      spreadsheet.getRange('E4').activate()
+    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('C5').isChecked()){
       redoFilter()
       copyNames()
-      //      lookupCity()
+      var city = lookupCity()
+      spreadsheet.getRange('E4').setValue(city)
+      spreadsheet.getRange('E5').activate()
     } else if (rowOfCellEdited === 6){
       redoFilter()
       copyNames()
@@ -185,17 +189,19 @@ function toggleCheckboxes(rowOfCellEdited){
   }
 } 
 
-//function lookupCity() {
-//  var spreadsheet = SpreadsheetApp.getActive();
-//  spreadsheet.getRange('E4').activate();
-//  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D345,3,false)');
-//}
-//
-//function lookupZip(){
-//  var spreadsheet = SpreadsheetApp.getActive();
-//  spreadsheet.getRange('E5').activate();
-//  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B345,2,false)'); 
-//}
+function lookupCity() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('E4').activate();
+  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D345,3,false)');
+  return spreadsheet.getRange('E4').getValue()
+}
+
+function lookupZip(){
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('E5').activate();
+  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B345,2,false)'); 
+  return spreadsheet.getRange('E5').getValue()
+}
 
 function lightenCity() {
   var spreadsheet = SpreadsheetApp.getActive();
