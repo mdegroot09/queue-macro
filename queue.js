@@ -81,13 +81,11 @@ function onEdit(e){
       copyNames()
       var zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
-      spreadsheet.getRange('E4').activate()
     } else if (rowOfCellEdited === 5 && spreadsheet.getRange('C5').isChecked()){
       redoFilter()
       copyNames()
       var city = lookupCity()
       spreadsheet.getRange('E4').setValue(city)
-      spreadsheet.getRange('E5').activate()
     } else if (rowOfCellEdited === 6){
       redoFilter()
       copyNames()
@@ -206,13 +204,21 @@ function lookupZip(){
 function lightenCity() {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D4:E4').setFontColor('#cccccc')
+  spreadsheet.getRange('E4').setBackground('#fefefe')
+  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   spreadsheet.getRange('D5:E5').setFontColor('#000000')
+  spreadsheet.getRange('E5').setBackground('#fff2cc')
+  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   spreadsheet.getRange('E5').activate()
 }
 
 function lightenZip() {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D5:E5').setFontColor('#cccccc')
+  spreadsheet.getRange('E5').setBackground('#fefefe')
+  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   spreadsheet.getRange('D4:E4').setFontColor('#000000')
+  spreadsheet.getRange('E4').setBackground('#fff2cc')
+  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   spreadsheet.getRange('E4').activate()
 }
