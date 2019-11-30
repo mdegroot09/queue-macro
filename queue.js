@@ -144,10 +144,12 @@ function updateAgentTimeStamp(){
   } else {
     spreadsheet.getRange('G5').activate()
     
-    findAgent()
-    
-    spreadsheet.getActiveRange().offset(0,3).activate() 
-    spreadsheet.getActiveCell().setValue(new Date());
+    var spreadsheet = SpreadsheetApp.getActive();
+//    spreadsheet.setActiveSheet(spreadsheet.getSheetByName(spreadsheet.getRange('G5').getValue()), true);
+    var agentName = spreadsheet.getRange('G5').getValue()
+    spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
+    spreadsheet.getSheetByName(agentName).getRange('A9').setValue(new Date());
+    spreadsheet.getSheetByName(agentName).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(7, true);
