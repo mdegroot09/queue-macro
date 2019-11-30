@@ -92,6 +92,8 @@ function onEdit(e){
     }
   } else if (columnOfCellEdited === 3 && (rowOfCellEdited === 4 || rowOfCellEdited === 5)){
     toggleCheckboxes(rowOfCellEdited)
+    redoFilter()
+    copyNames()
   }  
 }
 
@@ -101,7 +103,7 @@ function redoFilter() {
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D8').activate();
-  spreadsheet.getRange('D8:G15').createFilter();
+  spreadsheet.getRange('D8:H15').createFilter();
   
   // Get Radius in C2
   spreadsheet.getRange('E6').activate();
@@ -113,6 +115,9 @@ function redoFilter() {
   
   // Sort Last Lead Received from oldest to youngest
   spreadsheet.getActiveSheet().getFilter().sort(7, true);
+  
+  // Sort 7-Day Total from least to most
+  spreadsheet.getActiveSheet().getFilter().sort(8, true);
 };
 
 function clearFilters() {
@@ -153,6 +158,9 @@ function updateAgentTimeStamp(){
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(7, true);
+    
+    // Sort 7-Day Total from least to most
+    spreadsheet.getActiveSheet().getFilter().sort(8, true);
     
     copyNames()
   }
