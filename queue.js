@@ -115,7 +115,15 @@ function onEdit(e){
     toggleCheckboxes(rowOfCellEdited)
     redoFilter()
     copyNames()
-  }  
+  
+  } else if (columnOfCellEdited === 8 && rowOfCellEdited === 5){
+    
+    // When H5 is changed to 'UPDATE', change
+    if(spreadsheet.getRange('H5').getValue() === 'Update' && !spreadsheet.getRange('G5').isBlank()){
+      updateAgentTimeStamp()
+      spreadsheet.getRange('H5').setValue('')
+    }
+  }
 }
 
 function redoFilter() {
