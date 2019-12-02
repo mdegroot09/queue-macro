@@ -113,8 +113,8 @@ function onEdit(e){
     
     // if a checkbox is changed
     toggleCheckboxes(rowOfCellEdited)
-    redoFilter()
-    copyNames()
+//    redoFilter()
+//    copyNames()
   
   } else if (columnOfCellEdited === 8 && rowOfCellEdited === 5){
     
