@@ -1,4 +1,4 @@
-function ziploc(zip1, zip2) {
+function zipIt(zip1, zip2) {
  
   // zip codes 84009 and 84129 are not recognized by api.zippopotam.us
   if(zip1 === 84009){
@@ -59,7 +59,7 @@ function calcCrow(lat1, lon1, lat2, lon2)
     Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   var d = R * c;  
-  return d;
+  return d
 }
 
 // Converts numeric degrees to radians
@@ -74,23 +74,44 @@ function onEdit(e){
   var rowOfCellEdited = range.getRow();
   var spreadsheet = SpreadsheetApp.getActive();
   
+  //if(spreadsheet.getRange('H6').isBlank() {
+    //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+      //spreadsheet.getRange('H6').setValue('mobile') 
+    //}
+  //} 
+  
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
     if (rowOfCellEdited === 4 && spreadsheet.getRange('C4').isChecked()){
-      redoFilter()
-      copyNames()
+      
+      // if City name is changed AND selected
+      // redoFilter()
+      // copyNames()
+      
+      // change zip code to match entered city
       var zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
-    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('C5').isChecked()){
+      
+    } else if (rowOfCellEdited === 5){
+      
+      // if Zip Code is changed selected
       redoFilter()
       copyNames()
+      
+      // change city name to match entered zip code
       var city = lookupCity()
       spreadsheet.getRange('E4').setValue(city)
+      
     } else if (rowOfCellEdited === 6){
+      
+      // if Mile Radius is changed AND selected
       redoFilter()
       copyNames()
+      
     }
   } else if (columnOfCellEdited === 3 && (rowOfCellEdited === 4 || rowOfCellEdited === 5)){
+    
+    // if a checkbox is changed
     toggleCheckboxes(rowOfCellEdited)
     redoFilter()
     copyNames()
@@ -200,14 +221,14 @@ function toggleCheckboxes(rowOfCellEdited){
 function lookupCity() {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('E4').activate();
-  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D345,3,false)');
+  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D390,3,false)');
   return spreadsheet.getRange('E4').getValue()
 }
 
 function lookupZip(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('E5').activate();
-  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B345,2,false)'); 
+  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B390,2,false)'); 
   return spreadsheet.getRange('E5').getValue()
 }
 
