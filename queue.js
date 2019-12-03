@@ -82,26 +82,26 @@ function onEdit(e){
   
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 4 && spreadsheet.getRange('C4').isChecked()){
-      
-      // if City name is changed AND selected
-      // redoFilter()
-      // copyNames()
+    if (rowOfCellEdited === 4 && spreadsheet.getRange('C4')){
       
       // change zip code to match entered city
       var zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
       
-    } else if (rowOfCellEdited === 5){
-      
-      // if Zip Code is changed selected
+      // if City name is changed AND selected
       redoFilter()
       copyNames()
+      
+    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('C5')){
       
       // change city name to match entered zip code
       var city = lookupCity()
       spreadsheet.getRange('E4').setValue(city)
       
+      // if Zip Code is changed selected
+      redoFilter()
+      copyNames()
+            
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed AND selected
