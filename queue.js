@@ -131,13 +131,10 @@ function redoFilter() {
   
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D8').activate();
   spreadsheet.getRange('D8:H15').createFilter();
   
-  // Get Radius in C2
-  spreadsheet.getRange('E6').activate();
-  var cell = SpreadsheetApp.getActiveSheet().getActiveCell();
-  var val = cell.getValue();
+  // Get Radius in E6
+  var val = spreadsheet.getRange('E6').getValue()
   
   var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
   spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(6, criteria);
@@ -151,9 +148,7 @@ function redoFilter() {
 
 function clearFilters() {
   var spreadsheet = SpreadsheetApp.getActive();
-  var sheet = spreadsheet.getActiveSheet();
   spreadsheet.getActiveSheet().getFilter().remove();
-  spreadsheet.getRange('E5').activate();
   
   // clear column h cells
   spreadsheet.getRange('K1:K25').clear({contentsOnly: true, skipFilteredRows: false});
@@ -164,11 +159,9 @@ function clearFilters() {
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D8').activate();
-  var currentCell = spreadsheet.getCurrentCell()
   spreadsheet.getRange('D8:D24').copyTo(spreadsheet.getRange('K1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
   spreadsheet.getRange('K2').copyTo(spreadsheet.getRange('G5'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
-  return spreadsheet.getRange('G5').activate();
+  return;
 }
 
 function updateAgentTimeStamp(){
@@ -176,10 +169,8 @@ function updateAgentTimeStamp(){
   if(spreadsheet.getRange('G5').isBlank()){
     return 
   } else {
-    spreadsheet.getRange('G5').activate()
     
     var spreadsheet = SpreadsheetApp.getActive();
-//    spreadsheet.setActiveSheet(spreadsheet.getSheetByName(spreadsheet.getRange('G5').getValue()), true);
     var agentName = spreadsheet.getRange('G5').getValue()
     spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
     spreadsheet.getSheetByName(agentName).getRange('A9').setValue(new Date());
@@ -192,16 +183,6 @@ function updateAgentTimeStamp(){
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
     
     copyNames()
-  }
-  
-  spreadsheet.getRange('G5').activate()
-}
-
-function findAgent() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D9').activate()
-  while (spreadsheet.getActiveRange().getValue() !== spreadsheet.getRange('G5').getValue()){
-    spreadsheet.getActiveRange().offset(1,0).activate()
   }
 }
 
@@ -228,15 +209,13 @@ function toggleCheckboxes(rowOfCellEdited){
 
 function lookupCity() {
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E4').activate();
-  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D390,3,false)');
+  spreadsheet.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D390,3,false)');
   return spreadsheet.getRange('E4').getValue()
 }
 
 function lookupZip(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E5').activate();
-  spreadsheet.getCurrentCell().setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B390,2,false)'); 
+  spreadsheet.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B390,2,false)'); 
   return spreadsheet.getRange('E5').getValue()
 }
 
@@ -248,7 +227,6 @@ function lightenCity() {
   spreadsheet.getRange('D5:E5').setFontColor('#3e494c')
   spreadsheet.getRange('E5').setBackground('#fff2cc')
   spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('E5').activate()
 }
 
 function lightenZip() {
@@ -259,5 +237,4 @@ function lightenZip() {
   spreadsheet.getRange('D4:E4').setFontColor('#3e494c')
   spreadsheet.getRange('E4').setBackground('#fff2cc')
   spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('E4').activate()
 }
