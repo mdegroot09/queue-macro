@@ -151,7 +151,7 @@ function clearFilters() {
   spreadsheet.getActiveSheet().getFilter().remove();
   
   // clear column h cells
-  spreadsheet.getRange('K1:K25').clear({contentsOnly: true, skipFilteredRows: false});
+  spreadsheet.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
   spreadsheet.getRange('G5').clear({contentsOnly: true})
@@ -159,8 +159,8 @@ function clearFilters() {
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D8:D24').copyTo(spreadsheet.getRange('K1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('K2').copyTo(spreadsheet.getRange('G5'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  spreadsheet.getRange('D8:D24').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('G5'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
   return;
 }
 
