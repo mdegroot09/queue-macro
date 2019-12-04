@@ -119,7 +119,7 @@ function onEdit(e){
   } else if (columnOfCellEdited === 8 && rowOfCellEdited === 5){
     
     // When H5 is changed to 'UPDATE', change
-    if(spreadsheet.getRange('H5').getValue() === 'Update' && !spreadsheet.getRange('G5').isBlank()){
+    if(spreadsheet.getRange('H5').getValue() === 'Update' && !spreadsheet.getRange('H4').isBlank()){
       updateAgentTimeStamp()
       spreadsheet.getRange('H5').setValue('')
     }
@@ -131,7 +131,7 @@ function redoFilter() {
   
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D8:H15').createFilter();
+  spreadsheet.getRange('D10:H17').createFilter();
   
   // Get Radius in E6
   var val = spreadsheet.getRange('E6').getValue()
@@ -154,24 +154,24 @@ function clearFilters() {
   spreadsheet.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
-  spreadsheet.getRange('G5').clear({contentsOnly: true})
+  spreadsheet.getRange('H4').clear({contentsOnly: true})
 };
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D8:D24').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('G5'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  spreadsheet.getRange('D10:D30').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('H4'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
   return;
 }
 
 function updateAgentTimeStamp(){
   var spreadsheet = SpreadsheetApp.getActive();
-  if(spreadsheet.getRange('G5').isBlank()){
+  if(spreadsheet.getRange('H4').isBlank()){
     return 
   } else {
     
     var spreadsheet = SpreadsheetApp.getActive();
-    var agentName = spreadsheet.getRange('G5').getValue()
+    var agentName = spreadsheet.getRange('H4').getValue()
     spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
     spreadsheet.getSheetByName(agentName).getRange('A9').setValue(new Date());
     spreadsheet.getSheetByName(agentName).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
