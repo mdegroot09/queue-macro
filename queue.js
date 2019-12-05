@@ -72,40 +72,34 @@ function onEdit(e){
   var rowOfCellEdited = range.getRow();
   var spreadsheet = SpreadsheetApp.getActive();
   
-  //if(spreadsheet.getRange('H6').isBlank() {
-    //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-      //spreadsheet.getRange('H6').setValue('mobile') 
-    //}
-  //} 
-  
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 4 && spreadsheet.getRange('C4')){
+    if (rowOfCellEdited === 4){
       
       // change zip code to match entered city
       var zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
       
       // if City name is changed AND selected
-//      redoFormulas()
+      redoFormulas()
       redoFilter()
       copyNames()
       
-    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('C5')){
+    } else if (rowOfCellEdited === 5){
       
       // change city name to match entered zip code
       var city = lookupCity()
       spreadsheet.getRange('E4').setValue(city)
       
-      // if Zip Code is changed selected
-//      redoFormulas()
+      // if Zip Code is changed AND selected
+      redoFormulas()
       redoFilter()
       copyNames()
             
     } else if (rowOfCellEdited === 6){
       
-      // if Mile Radius is changed AND selected
-//      redoFormulas()
+      // if Mile Radius is changed
+      redoFormulas()
       redoFilter()
       copyNames()
       
@@ -113,7 +107,7 @@ function onEdit(e){
   } else if (columnOfCellEdited === 3 && (rowOfCellEdited === 4 || rowOfCellEdited === 5)){
     
     // if a checkbox is changed
-    toggleCheckboxes(rowOfCellEdited)
+//    toggleCheckboxes(rowOfCellEdited)
 //    redoFilter()
 //    copyNames()
   
@@ -129,40 +123,17 @@ function onEdit(e){
 
 function redoFormulas(){
   var spreadsheet = SpreadsheetApp.getActive();
-  var zip = spreadsheet.getRange('E5').getValue()
   
-  spreadsheet.getRange('F13:F19').setNumberFormat('0')
-  
-  spreadsheet.getRange('F13').setValue("=VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false)")
-  var zipAgent = spreadsheet.getRange('F13').getValue()
-  spreadsheet.getRange('K13').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F14').setValue("=VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F14').getValue()
-  spreadsheet.getRange('K14').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F15').setValue("=VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F15').getValue()
-  spreadsheet.getRange('K15').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F16').setValue("=VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F16').getValue()
-  spreadsheet.getRange('K16').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F17').setValue("=VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F17').getValue()
-  spreadsheet.getRange('K17').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F18').setValue("=VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F18').getValue()
-  spreadsheet.getRange('K18').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('F19').setValue("=VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false)")
-  zipAgent = spreadsheet.getRange('F19').getValue()
-  spreadsheet.getRange('K19').setFormula("=zipIt("+zip+","+zipAgent+")")
-  
-  spreadsheet.getRange('K13:K19').copyTo(spreadsheet.getRange('F13'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
-  spreadsheet.getRange('F13:F19').setNumberFormat('0.0')
+  spreadsheet.getRange('F13').setValue("=zipIt(VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F14').setValue("=zipIt(VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F15').setValue("=zipIt(VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F16').setValue("=zipIt(VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F17').setValue("=zipIt(VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F18').setValue("=zipIt(VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  spreadsheet.getRange('F19').setValue("=zipIt(VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+
+//  var values = spreadsheet.getRange('F13:F19').getValues()
+//  spreadsheet.getRange('F13:F19').setValues(values)
 }
 
 function redoFilter() {
@@ -221,6 +192,7 @@ function updateAgentTimeStamp(){
     // Sort 7-Day Total from least to most
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
     
+    redoFormulas()
     copyNames()
   }
 }
