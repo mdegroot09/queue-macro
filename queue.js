@@ -1,12 +1,10 @@
 function zipIt(zip1, zip2) {
- 
   // zip codes 84009 and 84129 are not recognized by api.zippopotam.us
   if(zip1 === 84009){
     zip1 = 84095 
   } else if (zip1 === 84129){
     zip1 = 84123
   } 
-  
   
   if (zip2 === 84009){
     zip2 = 84095
@@ -17,7 +15,7 @@ function zipIt(zip1, zip2) {
   
   // 1st Zip Code API call
   
-  // to learn more about the zippopotam.us API, visit
+  // Get lat and lon of zip from zippopotam.us API
   var response = UrlFetchApp.fetch("http://api.zippopotam.us/US/" + zip1, {muteHttpExceptions: true});
   
   if (String(response.getResponseCode())[0] === '4'){
@@ -32,7 +30,7 @@ function zipIt(zip1, zip2) {
   
   // 2nd Zip Code API call
   
-    // to learn more about the zippopotam.us API, visit
+    // Get lat and lon of zip from zippopotam.us API
   var response = UrlFetchApp.fetch("http://api.zippopotam.us/US/" + zip2, {muteHttpExceptions: true});
   
   if (String(response.getResponseCode())[0] === '4'){
@@ -89,6 +87,7 @@ function onEdit(e){
       spreadsheet.getRange('E5').setValue(zip)
       
       // if City name is changed AND selected
+//      redoFormulas()
       redoFilter()
       copyNames()
       
@@ -99,12 +98,14 @@ function onEdit(e){
       spreadsheet.getRange('E4').setValue(city)
       
       // if Zip Code is changed selected
+//      redoFormulas()
       redoFilter()
       copyNames()
             
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed AND selected
+//      redoFormulas()
       redoFilter()
       copyNames()
       
@@ -116,14 +117,52 @@ function onEdit(e){
 //    redoFilter()
 //    copyNames()
   
-  } else if (columnOfCellEdited === 8 && rowOfCellEdited === 9){
+  } else if (columnOfCellEdited === 7 && rowOfCellEdited === 9){
     
-    // When H8 is changed to 'UPDATE', change
-    if(spreadsheet.getRange('H9').getValue() === 'Update' && !spreadsheet.getRange('E9').isBlank()){
+    // When H8 is changed to 'ASSIGN', change
+    if(spreadsheet.getRange('G9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
       updateAgentTimeStamp()
-      spreadsheet.getRange('H9').setValue('')
+      spreadsheet.getRange('G9').setValue('')
     }
   }
+}
+
+function redoFormulas(){
+  var spreadsheet = SpreadsheetApp.getActive();
+  var zip = spreadsheet.getRange('E5').getValue()
+  
+  spreadsheet.getRange('F13:F19').setNumberFormat('0')
+  
+  spreadsheet.getRange('F13').setValue("=VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false)")
+  var zipAgent = spreadsheet.getRange('F13').getValue()
+  spreadsheet.getRange('K13').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F14').setValue("=VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F14').getValue()
+  spreadsheet.getRange('K14').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F15').setValue("=VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F15').getValue()
+  spreadsheet.getRange('K15').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F16').setValue("=VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F16').getValue()
+  spreadsheet.getRange('K16').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F17').setValue("=VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F17').getValue()
+  spreadsheet.getRange('K17').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F18').setValue("=VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F18').getValue()
+  spreadsheet.getRange('K18').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('F19').setValue("=VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false)")
+  zipAgent = spreadsheet.getRange('F19').getValue()
+  spreadsheet.getRange('K19').setFormula("=zipIt("+zip+","+zipAgent+")")
+  
+  spreadsheet.getRange('K13:K19').copyTo(spreadsheet.getRange('F13'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  spreadsheet.getRange('F13:F19').setNumberFormat('0.0')
 }
 
 function redoFilter() {
