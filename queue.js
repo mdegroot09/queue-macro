@@ -71,17 +71,18 @@ function onEdit(e){
   var columnOfCellEdited = range.getColumn();
   var rowOfCellEdited = range.getRow();
   var spreadsheet = SpreadsheetApp.getActive();
+  var zip = spreadsheet.getRange('E5').getValue()
   
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
     if (rowOfCellEdited === 4){
       
       // change zip code to match entered city
-      var zip = lookupZip()
+      zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
       
       // if City name is changed AND selected
-      redoFormulas()
+      redoFormulas(zip)
       redoFilter()
       copyNames()
       
@@ -92,14 +93,14 @@ function onEdit(e){
       spreadsheet.getRange('E4').setValue(city)
       
       // if Zip Code is changed AND selected
-      redoFormulas()
+      redoFormulas(zip)
       redoFilter()
       copyNames()
             
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed
-      redoFormulas()
+      redoFormulas(zip)
       redoFilter()
       copyNames()
       
@@ -121,17 +122,71 @@ function onEdit(e){
   }
 }
 
-function redoFormulas(){
+function redoFormulas(zip){
   var spreadsheet = SpreadsheetApp.getActive();
   
-  spreadsheet.getRange('F13').setValue("=zipIt(VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F14').setValue("=zipIt(VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F15').setValue("=zipIt(VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F16').setValue("=zipIt(VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F17').setValue("=zipIt(VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F18').setValue("=zipIt(VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false),E5)")
-  spreadsheet.getRange('F19').setValue("=zipIt(VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false),E5)")
+  // clear dropdown
+  spreadsheet.getRange('E9').clear({contentsOnly: true})
+  
+  spreadsheet.getRange('Y13').setValue("=zipIt(VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y14').setValue("=zipIt(VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y15').setValue("=zipIt(VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y16').setValue("=zipIt(VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y17').setValue("=zipIt(VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y18').setValue("=zipIt(VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y19').setValue("=zipIt(VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
 
+  spreadsheet.getRange('Z13').setValue("=zipIt("+zip+",VLOOKUP(D13,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z14').setValue("=zipIt("+zip+",VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z15').setValue("=zipIt("+zip+",VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z16').setValue("=zipIt("+zip+",VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z17').setValue("=zipIt("+zip+",VLOOKUP(D17,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z18').setValue("=zipIt("+zip+",VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z19').setValue("=zipIt("+zip+",VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false))")
+  
+  if (spreadsheet.getRange('Y13').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F13').setValue(spreadsheet.getRange('Y13').getValue())
+  } else {
+    spreadsheet.getRange('F13').setValue(spreadsheet.getRange('Z13').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F14').setValue(spreadsheet.getRange('Y14').getValue())
+  } else {
+    spreadsheet.getRange('F14').setValue(spreadsheet.getRange('Z14').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y15').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F15').setValue(spreadsheet.getRange('Y15').getValue())
+  } else {
+    spreadsheet.getRange('F15').setValue(spreadsheet.getRange('Z15').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y16').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F16').setValue(spreadsheet.getRange('Y16').getValue())
+  } else {
+    spreadsheet.getRange('F16').setValue(spreadsheet.getRange('Z16').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y17').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F17').setValue(spreadsheet.getRange('Y17').getValue())
+  } else {
+    spreadsheet.getRange('F17').setValue(spreadsheet.getRange('Z17').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y18').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F18').setValue(spreadsheet.getRange('Y18').getValue())
+  } else {
+    spreadsheet.getRange('F18').setValue(spreadsheet.getRange('Z18').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y19').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('F19').setValue(spreadsheet.getRange('Y19').getValue())
+  } else {
+    spreadsheet.getRange('F19').setValue(spreadsheet.getRange('Z19').getValue())
+  }
+  
+  
 //  var values = spreadsheet.getRange('F13:F19').getValues()
 //  spreadsheet.getRange('F13:F19').setValues(values)
 }
@@ -182,17 +237,33 @@ function updateAgentTimeStamp(){
     
     var spreadsheet = SpreadsheetApp.getActive();
     var agentName = spreadsheet.getRange('E9').getValue()
+    var buyerName = spreadsheet.getRange('H5').getValue()
+    var buyerPhone = spreadsheet.getRange('H6').getValue()
+    var buyerEmail = spreadsheet.getRange('H7').getValue()
+    var zip = spreadsheet.getRange('E5').getValue()
+    
     spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
     spreadsheet.getSheetByName(agentName).getRange('A9').setValue(new Date());
     spreadsheet.getSheetByName(agentName).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
+    spreadsheet.getSheetByName(agentName).getRange('B9').setValue(buyerName)
+    spreadsheet.getSheetByName(agentName).getRange('C9').setValue(buyerPhone)
+    spreadsheet.getSheetByName(agentName).getRange('D9').setValue(buyerEmail)
+    
+    // clear Buyer Info inputs and redo formatting
+    spreadsheet.getRange('H5:H7').clear({contentsOnly: true})
+//    spreadsheet.getRange('H5:H7').setBackground('#fff2cc')
+//    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+//    .setHorizontalAlignment('left')
+//    .setVerticalAlignment('middle');
+//    spreadsheet.getRange('G5:H7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(7, true);
     
     // Sort 7-Day Total from least to most
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
-    
-    redoFormulas()
+
+    redoFormulas(zip)
     copyNames()
   }
 }
