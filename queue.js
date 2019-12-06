@@ -115,9 +115,9 @@ function onEdit(e){
   } else if (columnOfCellEdited === 7 && rowOfCellEdited === 9){
     
     // When H8 is changed to 'ASSIGN', change
-    if(spreadsheet.getRange('G9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
+    if(spreadsheet.getRange('H9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
       updateAgentTimeStamp()
-      spreadsheet.getRange('G9').setValue('')
+      spreadsheet.getRange('H9').setValue('')
     }
   }
 }
@@ -196,7 +196,7 @@ function redoFilter() {
   
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D12:H19').createFilter();
+  spreadsheet.getRange('D12:I19').createFilter();
   
   // Get Radius in E6
   var val = spreadsheet.getRange('E6').getValue()
@@ -208,7 +208,7 @@ function redoFilter() {
   spreadsheet.getActiveSheet().getFilter().sort(7, true);
   
   // Sort 7-Day Total from least to most
-  spreadsheet.getActiveSheet().getFilter().sort(8, true);
+  spreadsheet.getActiveSheet().getFilter().sort(9, true);
 };
 
 function clearFilters() {
@@ -237,9 +237,9 @@ function updateAgentTimeStamp(){
     
     var spreadsheet = SpreadsheetApp.getActive();
     var agentName = spreadsheet.getRange('E9').getValue()
-    var buyerName = spreadsheet.getRange('H5').getValue()
-    var buyerPhone = spreadsheet.getRange('H6').getValue()
-    var buyerEmail = spreadsheet.getRange('H7').getValue()
+    var buyerName = spreadsheet.getRange('I5').getValue()
+    var buyerPhone = spreadsheet.getRange('I6').getValue()
+    var buyerEmail = spreadsheet.getRange('I7').getValue()
     var zip = spreadsheet.getRange('E5').getValue()
     
     spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
@@ -250,12 +250,12 @@ function updateAgentTimeStamp(){
     spreadsheet.getSheetByName(agentName).getRange('D9').setValue(buyerEmail)
     
     // clear Buyer Info inputs and redo formatting
-    spreadsheet.getRange('H5:H7').clear({contentsOnly: true})
-//    spreadsheet.getRange('H5:H7').setBackground('#fff2cc')
+    spreadsheet.getRange('I5:I7').clear({contentsOnly: true})
+//    spreadsheet.getRange('I5:I7').setBackground('#fff2cc')
 //    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 //    .setHorizontalAlignment('left')
 //    .setVerticalAlignment('middle');
-//    spreadsheet.getRange('G5:H7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+//    spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(7, true);
