@@ -334,16 +334,22 @@ function errorBox(cell) {
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
-function insertRow(){
+function insertRow(buyerName, listingAgent, buyerAgent, source, tags, notes){
   var spreadsheet = SpreadsheetApp.getActive();
   var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
   var referrals = master.getSheetByName('Referrals')
     
   referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);
+  referrals.getRange('A4').setValue(buyerName)
+  referrals.getRange('B4').setValue(listingAgent)
   referrals.getRange('C4').setValue('Lead')
   referrals.getRange('D4').setValue(600)
+  referrals.getRange('E4').setValue(source)
+  referrals.getRange('G4').setValue(buyerAgent)
   referrals.getRange('H4').setValue('Open')
-  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))');
+  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+  referrals.getRange('L4').setValue(tags)
+  referrals.getRange('M4').setValue(notes)
   referrals.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
   referrals.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
   referrals.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
