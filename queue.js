@@ -72,6 +72,7 @@ function onEdit(e){
   var rowOfCellEdited = range.getRow();
   var spreadsheet = SpreadsheetApp.getActive();
   var zip = spreadsheet.getRange('E5').getValue()
+  var ui = SpreadsheetApp.getUi()
   
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
@@ -105,20 +106,26 @@ function onEdit(e){
       copyNames()
       
     }
-  } else if (columnOfCellEdited === 3 && (rowOfCellEdited === 4 || rowOfCellEdited === 5)){
-    
-    // if a checkbox is changed
-//    toggleCheckboxes(rowOfCellEdited)
-//    redoFilter()
-//    copyNames()
-  
   } else if (columnOfCellEdited === 8 && rowOfCellEdited === 9){
     
-    // When H8 is changed to 'ASSIGN', change
-    if(spreadsheet.getRange('H9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
-      updateAgentTimeStamp()
+    // Check if buyer name is filled out
+    if (spreadsheet.getRange('H9').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
       spreadsheet.getRange('H9').setValue('')
-    }
+      if (!spreadsheet.getRange('I5').getValue()) {
+        errorBox('I5')
+      }
+      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+        errorBox('I6')
+        errorBox('I7')
+      }
+//      ui.alert('Please fill out the buyer info.') 
+    } else {
+      // When H9 is changed to 'ASSIGN', change
+      if(spreadsheet.getRange('H9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
+        updateAgentTimeStamp()
+        spreadsheet.getRange('H9').setValue('')
+      }
+    } 
   }
 }
 
@@ -128,6 +135,7 @@ function redoFormulas(zip){
   // clear dropdown
   spreadsheet.getRange('E9').clear({contentsOnly: true})
   
+  // add two calls for each agent
   spreadsheet.getRange('Y14').setValue("=zipIt(VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
   spreadsheet.getRange('Y15').setValue("=zipIt(VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
   spreadsheet.getRange('Y16').setValue("=zipIt(VLOOKUP(D16,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
@@ -144,6 +152,7 @@ function redoFormulas(zip){
   spreadsheet.getRange('Z19').setValue("=zipIt("+zip+",VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false))")
   spreadsheet.getRange('Z20').setValue("=zipIt("+zip+",VLOOKUP(D20,'Agent Team List'!$A$2:$C$8,3,false))")
   
+  // select distance result that isn't an error
   if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
     spreadsheet.getRange('G14').setValue(spreadsheet.getRange('Y14').getValue())
   } else {
@@ -185,10 +194,6 @@ function redoFormulas(zip){
   } else {
     spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Z20').getValue())
   }
-  
-  
-//  var values = spreadsheet.getRange('G14:G20').getValues()
-//  spreadsheet.getRange('G14:G20').setValues(values)
 }
 
 function redoFilter() {
@@ -251,11 +256,11 @@ function updateAgentTimeStamp(){
     
     // clear Buyer Info inputs and redo formatting
     spreadsheet.getRange('I5:I7').clear({contentsOnly: true})
-//    spreadsheet.getRange('I5:I7').setBackground('#fff2cc')
-//    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-//    .setHorizontalAlignment('left')
-//    .setVerticalAlignment('middle');
-//    spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    spreadsheet.getRange('I5:I7').setBackground('#fff2cc')
+    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+    .setHorizontalAlignment('left')
+    .setVerticalAlignment('middle');
+    spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
@@ -319,4 +324,12 @@ function lightenZip() {
   spreadsheet.getRange('D4:E4').setFontColor('#3e494c')
   spreadsheet.getRange('E4').setBackground('#fff2cc')
   spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+}
+
+function errorBox(cell) {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange(cell).setBackground('#f4cccc')
+  .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
