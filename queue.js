@@ -118,7 +118,7 @@ function onEdit(e){
         errorBox('I6')
         errorBox('I7')
       }
-//      ui.alert('Please fill out the buyer info.') 
+    //      ui.alert('Please fill out the buyer info.') 
     } else {
       // When F11 is changed to 'ASSIGN', change
       if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
@@ -143,6 +143,10 @@ function redoFormulas(zip){
   spreadsheet.getRange('Y18').setValue("=zipIt(VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
   spreadsheet.getRange('Y19').setValue("=zipIt(VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
   spreadsheet.getRange('Y20').setValue("=zipIt(VLOOKUP(D20,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y21').setValue("=zipIt(VLOOKUP(D21,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y22').setValue("=zipIt(VLOOKUP(D22,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y23').setValue("=zipIt(VLOOKUP(D23,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
+  spreadsheet.getRange('Y24').setValue("=zipIt(VLOOKUP(D24,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
 
   spreadsheet.getRange('Z14').setValue("=zipIt("+zip+",VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false))")
   spreadsheet.getRange('Z15').setValue("=zipIt("+zip+",VLOOKUP(D15,'Agent Team List'!$A$2:$C$8,3,false))")
@@ -151,6 +155,10 @@ function redoFormulas(zip){
   spreadsheet.getRange('Z18').setValue("=zipIt("+zip+",VLOOKUP(D18,'Agent Team List'!$A$2:$C$8,3,false))")
   spreadsheet.getRange('Z19').setValue("=zipIt("+zip+",VLOOKUP(D19,'Agent Team List'!$A$2:$C$8,3,false))")
   spreadsheet.getRange('Z20').setValue("=zipIt("+zip+",VLOOKUP(D20,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z21').setValue("=zipIt("+zip+",VLOOKUP(D21,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z22').setValue("=zipIt("+zip+",VLOOKUP(D22,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z23').setValue("=zipIt("+zip+",VLOOKUP(D23,'Agent Team List'!$A$2:$C$8,3,false))")
+  spreadsheet.getRange('Z24').setValue("=zipIt("+zip+",VLOOKUP(D24,'Agent Team List'!$A$2:$C$8,3,false))")
   
   // select distance result that isn't an error
   if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
@@ -194,6 +202,30 @@ function redoFormulas(zip){
   } else {
     spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Z20').getValue())
   }
+  
+  if (spreadsheet.getRange('Y21').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Y21').getValue())
+  } else {
+    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Z21').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y22').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Y22').getValue())
+  } else {
+    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Z22').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y23').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Y23').getValue())
+  } else {
+    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Z23').getValue())
+  }
+  
+  if (spreadsheet.getRange('Y24').getValue() !== "#ERROR!"){
+    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Y24').getValue())
+  } else {
+    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Z24').getValue())
+  }
 }
 
 function redoFilter() {
@@ -201,7 +233,7 @@ function redoFilter() {
   
   // Recreate filter
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D13:I20').createFilter();
+  spreadsheet.getRange('D13:I24').createFilter();
   
   // Get Radius in E6
   var val = spreadsheet.getRange('E6').getValue()
@@ -241,26 +273,32 @@ function updateAgentTimeStamp(){
   } else {
     
     var spreadsheet = SpreadsheetApp.getActive();
-    var agentName = spreadsheet.getRange('E9').getValue()
+    var buyerAgent = spreadsheet.getRange('E9').getValue()
     var buyerName = spreadsheet.getRange('I5').getValue()
     var buyerPhone = spreadsheet.getRange('I6').getValue()
     var buyerEmail = spreadsheet.getRange('I7').getValue()
+    var listingAgent = spreadsheet.getRange('I8').getValue()
+    var source = spreadsheet.getRange('I9').getValue()
+    var tags = spreadsheet.getRange('I10').getValue()
+    var notes = spreadsheet.getRange('I11').getValue()
     var zip = spreadsheet.getRange('E5').getValue()
     
-    spreadsheet.getSheetByName(agentName).insertRowsBefore(9,1)
-    spreadsheet.getSheetByName(agentName).getRange('A9').setValue(new Date());
-    spreadsheet.getSheetByName(agentName).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
-    spreadsheet.getSheetByName(agentName).getRange('B9').setValue(buyerName)
-    spreadsheet.getSheetByName(agentName).getRange('C9').setValue(buyerPhone)
-    spreadsheet.getSheetByName(agentName).getRange('D9').setValue(buyerEmail)
+    updateMaster(buyerName, listingAgent, buyerAgent, source, tags, notes)
+    
+    spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
+    spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
+    spreadsheet.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
+    spreadsheet.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
+    spreadsheet.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
+    spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
     
     // clear Buyer Info inputs and redo formatting
-    spreadsheet.getRange('I5:I7').clear({contentsOnly: true})
-    spreadsheet.getRange('I5:I7').setBackground('#fff2cc')
+    spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
+    spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
     .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
     .setHorizontalAlignment('left')
     .setVerticalAlignment('middle');
-    spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
@@ -330,11 +368,11 @@ function errorBox(cell) {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange(cell).setBackground('#f4cccc')
   .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H5:I7').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
-function insertRow(buyerName, listingAgent, buyerAgent, source, tags, notes){
+function updateMaster(buyerName, listingAgent, buyerAgent, source, tags, notes){
   var spreadsheet = SpreadsheetApp.getActive();
   var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
   var referrals = master.getSheetByName('Referrals')
