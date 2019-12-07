@@ -122,7 +122,7 @@ function onEdit(e){
     } 
 //    else {
 //      // When F11 is changed to 'ASSIGN', change
-//      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
+//      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
 //        updateAgentTimeStamp()
 //        spreadsheet.getRange('F11').setValue('')
 //      }
@@ -134,7 +134,7 @@ function redoFormulas(zip){
   var spreadsheet = SpreadsheetApp.getActive();
   
   // clear dropdown
-  spreadsheet.getRange('E9').clear({contentsOnly: true})
+  spreadsheet.getRange('E8').clear({contentsOnly: true})
   
   // add two calls for each agent
   spreadsheet.getRange('Y14').setValue("=zipIt(VLOOKUP(D14,'Agent Team List'!$A$2:$C$8,3,false),"+zip+")")
@@ -257,35 +257,39 @@ function clearFilters() {
   spreadsheet.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
-  spreadsheet.getRange('E9').clear({contentsOnly: true})
+  spreadsheet.getRange('E8').clear({contentsOnly: true})
 };
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D13:D33').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E9'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
   return;
 }
 
 function updateAgentTimeStamp(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('F11').setValue('')
-  if(spreadsheet.getRange('E9').isBlank()){
+  if(spreadsheet.getRange('E8').isBlank()){
     return 
   } else {
     
-    var spreadsheet = SpreadsheetApp.getActive();
-    var buyerAgent = spreadsheet.getRange('E9').getValue()
-    var buyerName = spreadsheet.getRange('I5').getValue()
-    var buyerPhone = spreadsheet.getRange('I6').getValue()
-    var buyerEmail = spreadsheet.getRange('I7').getValue()
-    var listingAgent = spreadsheet.getRange('I8').getValue()
-    var source = spreadsheet.getRange('I9').getValue()
-    var tags = spreadsheet.getRange('I10').getValue()
-    var notes = spreadsheet.getRange('I11').getValue()
-    var zip = spreadsheet.getRange('E5').getValue()
-    
     updateMaster()
+    
+    var spreadsheet = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
+    var queue = spreadsheet.getSheetByName('Queue')
+    
+    spreadsheet.getRange('A1').setValue('hi')
+    
+    var buyerAgent = queue.getRange('E8').getValue()
+    var buyerName = queue.getRange('I5').getValue()
+    var buyerPhone = queue.getRange('I6').getValue()
+    var buyerEmail = queue.getRange('I7').getValue()
+    var listingAgent = queue.getRange('I8').getValue()
+    var source = queue.getRange('I9').getValue()
+    var tags = queue.getRange('I10').getValue()
+    var notes = queue.getRange('I11').getValue()
+    var zip = queue.getRange('E5').getValue()
     
     spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
     spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
@@ -316,7 +320,7 @@ function updateAgentTimeStamp(){
 
 function updateMaster(){
   var spreadsheet = SpreadsheetApp.getActive();
-  var buyerAgent = spreadsheet.getRange('E9').getValue()
+  var buyerAgent = spreadsheet.getRange('E8').getValue()
   var buyerName = spreadsheet.getRange('I5').getValue()
   var buyerPhone = spreadsheet.getRange('I6').getValue()
   var buyerEmail = spreadsheet.getRange('I7').getValue()
