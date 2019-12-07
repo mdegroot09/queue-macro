@@ -106,11 +106,11 @@ function onEdit(e){
       copyNames()
       
     }
-  } else if (columnOfCellEdited === 8 && rowOfCellEdited === 9){
+  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
     // Check if buyer name is filled out
-    if (spreadsheet.getRange('H9').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
-      spreadsheet.getRange('H9').setValue('')
+    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
+      spreadsheet.getRange('F11').setValue('')
       if (!spreadsheet.getRange('I5').getValue()) {
         errorBox('I5')
       }
@@ -120,10 +120,10 @@ function onEdit(e){
       }
 //      ui.alert('Please fill out the buyer info.') 
     } else {
-      // When H9 is changed to 'ASSIGN', change
-      if(spreadsheet.getRange('H9').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
+      // When F11 is changed to 'ASSIGN', change
+      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
         updateAgentTimeStamp()
-        spreadsheet.getRange('H9').setValue('')
+        spreadsheet.getRange('F11').setValue('')
       }
     } 
   }
