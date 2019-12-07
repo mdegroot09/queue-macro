@@ -119,13 +119,14 @@ function onEdit(e){
         errorBox('I7')
       }
     //      ui.alert('Please fill out the buyer info.') 
-    } else {
-      // When F11 is changed to 'ASSIGN', change
-      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
-        updateAgentTimeStamp()
-        spreadsheet.getRange('F11').setValue('')
-      }
     } 
+//    else {
+//      // When F11 is changed to 'ASSIGN', change
+//      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E9').isBlank()){
+//        updateAgentTimeStamp()
+//        spreadsheet.getRange('F11').setValue('')
+//      }
+//    } 
   }
 }
 
@@ -268,6 +269,7 @@ function copyNames(){
 
 function updateAgentTimeStamp(){
   var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('F11').setValue('')
   if(spreadsheet.getRange('E9').isBlank()){
     return 
   } else {
@@ -283,7 +285,8 @@ function updateAgentTimeStamp(){
     var notes = spreadsheet.getRange('I11').getValue()
     var zip = spreadsheet.getRange('E5').getValue()
     
-    updateMaster(buyerName, listingAgent, buyerAgent, source, tags, notes)
+//    updateMaster(buyerName, listingAgent, source, buyerAgent, tags, notes)
+    updateMaster()
     
     spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
     spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
@@ -372,12 +375,23 @@ function errorBox(cell) {
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
-function updateMaster(buyerName, listingAgent, buyerAgent, source, tags, notes){
+//function updateMaster(buyerName, listingAgent, source, buyerAgent, tags, notes){
+function updateMaster(){
   var spreadsheet = SpreadsheetApp.getActive();
+  var buyerAgent = spreadsheet.getRange('E9').getValue()
+  var buyerName = spreadsheet.getRange('I5').getValue()
+  var buyerPhone = spreadsheet.getRange('I6').getValue()
+  var buyerEmail = spreadsheet.getRange('I7').getValue()
+  var listingAgent = spreadsheet.getRange('I8').getValue()
+  var source = spreadsheet.getRange('I9').getValue()
+  var tags = spreadsheet.getRange('I10').getValue()
+  var notes = spreadsheet.getRange('I11').getValue()
+  var zip = spreadsheet.getRange('E5').getValue()
+    
   var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
   var referrals = master.getSheetByName('Referrals')
-    
-  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);
+  
+  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
   referrals.getRange('A4').setValue(buyerName)
   referrals.getRange('B4').setValue(listingAgent)
   referrals.getRange('C4').setValue('Lead')
