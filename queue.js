@@ -285,7 +285,6 @@ function updateAgentTimeStamp(){
     var notes = spreadsheet.getRange('I11').getValue()
     var zip = spreadsheet.getRange('E5').getValue()
     
-//    updateMaster(buyerName, listingAgent, source, buyerAgent, tags, notes)
     updateMaster()
     
     spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
@@ -312,6 +311,42 @@ function updateAgentTimeStamp(){
     redoFormulas(zip)
     copyNames()
   }
+}
+
+
+function updateMaster(){
+  var spreadsheet = SpreadsheetApp.getActive();
+  var buyerAgent = spreadsheet.getRange('E9').getValue()
+  var buyerName = spreadsheet.getRange('I5').getValue()
+  var buyerPhone = spreadsheet.getRange('I6').getValue()
+  var buyerEmail = spreadsheet.getRange('I7').getValue()
+  var listingAgent = spreadsheet.getRange('I8').getValue()
+  var source = spreadsheet.getRange('I9').getValue()
+  var tags = spreadsheet.getRange('I10').getValue()
+  var notes = spreadsheet.getRange('I11').getValue()
+  var zip = spreadsheet.getRange('E5').getValue()
+    
+  var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
+  var referrals = master.getSheetByName('Referrals')
+  
+  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
+  referrals.getRange('A4').setValue(buyerName)
+  referrals.getRange('B4').setValue(listingAgent)
+  referrals.getRange('C4').setValue('Lead')
+  referrals.getRange('D4').setValue(600)
+  referrals.getRange('E4').setValue(source)
+  referrals.getRange('G4').setValue(buyerAgent)
+  referrals.getRange('H4').setValue('Open')
+  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+  referrals.getRange('L4').setValue(tags)
+  referrals.getRange('M4').setValue(notes)
+  referrals.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
+  referrals.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
+  referrals.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
+  referrals.getRange('Q4').setValue('=TODAY()')
+  referrals.getRange('Q4').setNumberFormat('m"/"d"/"yy')
+  var date = referrals.getRange('Q4').getValue()
+  referrals.getRange('Q4').setValue(date)
 }
 
 function toggleCheckboxes(rowOfCellEdited){
@@ -373,40 +408,4 @@ function errorBox(cell) {
   .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
   spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-}
-
-//function updateMaster(buyerName, listingAgent, source, buyerAgent, tags, notes){
-function updateMaster(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  var buyerAgent = spreadsheet.getRange('E9').getValue()
-  var buyerName = spreadsheet.getRange('I5').getValue()
-  var buyerPhone = spreadsheet.getRange('I6').getValue()
-  var buyerEmail = spreadsheet.getRange('I7').getValue()
-  var listingAgent = spreadsheet.getRange('I8').getValue()
-  var source = spreadsheet.getRange('I9').getValue()
-  var tags = spreadsheet.getRange('I10').getValue()
-  var notes = spreadsheet.getRange('I11').getValue()
-  var zip = spreadsheet.getRange('E5').getValue()
-    
-  var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
-  var referrals = master.getSheetByName('Referrals')
-  
-  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
-  referrals.getRange('A4').setValue(buyerName)
-  referrals.getRange('B4').setValue(listingAgent)
-  referrals.getRange('C4').setValue('Lead')
-  referrals.getRange('D4').setValue(600)
-  referrals.getRange('E4').setValue(source)
-  referrals.getRange('G4').setValue(buyerAgent)
-  referrals.getRange('H4').setValue('Open')
-  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
-  referrals.getRange('L4').setValue(tags)
-  referrals.getRange('M4').setValue(notes)
-  referrals.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
-  referrals.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
-  referrals.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-  referrals.getRange('Q4').setValue('=TODAY()')
-  referrals.getRange('Q4').setNumberFormat('m"/"d"/"yy')
-  var date = referrals.getRange('Q4').getValue()
-  referrals.getRange('Q4').setValue(date)
 }
