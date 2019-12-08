@@ -315,7 +315,6 @@ function updateAgentTimeStamp(){
     .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
     .setHorizontalAlignment('center')
     .setVerticalAlignment('middle');
-    spreadsheet.getRange('E8:F9').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
     spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
     .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
