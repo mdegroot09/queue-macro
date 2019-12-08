@@ -108,18 +108,18 @@ function onEdit(e){
     }
   } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
-    // Check if buyer name is filled out
-    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
-      spreadsheet.getRange('F11').setValue('')
-      if (!spreadsheet.getRange('I5').getValue()) {
-        errorBox('I5')
-      }
-      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
-        errorBox('I6')
-        errorBox('I7')
-      }
-    //      ui.alert('Please fill out the buyer info.') 
-    } 
+//    // Check if buyer name is filled out
+//    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
+//      spreadsheet.getRange('F11').setValue('')
+//      if (!spreadsheet.getRange('I5').getValue()) {
+//        errorBox('I5')
+//      }
+//      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+//        errorBox('I6')
+//        errorBox('I7')
+//      }
+//    //      ui.alert('Please fill out the buyer info.') 
+//    } 
 //    else {
 //      // When F11 is changed to 'ASSIGN', change
 //      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
@@ -270,16 +270,28 @@ function copyNames(){
 function updateAgentTimeStamp(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('F11').setValue('')
-  if(spreadsheet.getRange('E8').isBlank()){
-    return 
+  
+  // Check if buyer info is filled out
+  if (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue())){
+    spreadsheet.getRange('F11').setValue('')
+    if (!spreadsheet.getRange('I5').getValue()) {
+      errorBox('I5')
+    }
+    if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+      errorBox('I6')
+      errorBox('I7')
+    }
+  //      ui.alert('Please fill out the buyer info.') 
+  } else if(spreadsheet.getRange('E8').isBlank()){
+    
+    errorBox('E8:F9') 
+  
   } else {
     
     updateMaster()
     
     var spreadsheet = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
     var queue = spreadsheet.getSheetByName('Queue')
-    
-    spreadsheet.getRange('A1').setValue('hi')
     
     var buyerAgent = queue.getRange('E8').getValue()
     var buyerName = queue.getRange('I5').getValue()
@@ -299,6 +311,11 @@ function updateAgentTimeStamp(){
     spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
     
     // clear Buyer Info inputs and redo formatting
+    spreadsheet.getRange('E8:F9').setBackground('#fff2cc')
+    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle');
+    spreadsheet.getRange('E8:F9').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
     spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
     .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
