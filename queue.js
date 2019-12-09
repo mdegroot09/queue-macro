@@ -76,7 +76,7 @@ function onEdit(e){
   
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 4){
+    if (rowOfCellEdited === 4 && spreadsheet.getRange('E4').getValue()){
       
       // change zip code to match entered city
       zip = lookupZip()
@@ -87,7 +87,7 @@ function onEdit(e){
       redoFilter()
       copyNames()
       
-    } else if (rowOfCellEdited === 5){
+    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('E5').getValue()){
       
       // change city name to match entered zip code
       var city = lookupCity()
@@ -322,13 +322,20 @@ function updateAgentTimeStamp(){
     .setVerticalAlignment('middle');
     spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
+    // clear miles distances for each agent
+    spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
+    
+    // clear the miles radius filter
+    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+    
     // Sort Last Lead Received from oldest to youngest
     spreadsheet.getActiveSheet().getFilter().sort(8, true);
     
     // Sort 7-Day Total from least to most
     spreadsheet.getActiveSheet().getFilter().sort(9, true);
 
-    redoFormulas(zip)
+    // redoFormulas(zip)
+    
     copyNames()
   }
 }
@@ -392,14 +399,22 @@ function toggleCheckboxes(rowOfCellEdited){
 
 function lookupCity() {
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D390,3,false)');
-  return spreadsheet.getRange('E4').getValue()
+  if (spreadsheet.getRange('E5').getValue()){
+    spreadsheet.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D391,3,false)');
+    return spreadsheet.getRange('E4').getValue()
+  } else {
+    return ''
+  }
 }
 
 function lookupZip(){
   var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B390,2,false)'); 
-  return spreadsheet.getRange('E5').getValue()
+  if (spreadsheet.getRange('E4').getValue()){
+    spreadsheet.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B391,2,false)'); 
+    return spreadsheet.getRange('E5').getValue()
+  } else {
+    return ''
+  }
 }
 
 function lightenCity() {
