@@ -322,7 +322,8 @@ function updateAgentTimeStamp(){
     .setVerticalAlignment('middle');
     spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
     
-    // clear miles distances for each agent
+    // clear city, zip, and miles distances for each agent
+    spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
     spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
     
     // clear the miles radius filter
