@@ -101,8 +101,20 @@ function onEdit(e){
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed
-      redoFormulas(zip)
-      redoFilter()
+      // redoFormulas(zip)
+      // redoFilter()
+      // Get Radius in E6
+      var val = spreadsheet.getRange('E6').getValue()
+      
+      var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
+      spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
+      
+      // Sort Last Lead Received from oldest to youngest
+      spreadsheet.getActiveSheet().getFilter().sort(8, true);
+      
+      // Sort 7-Day Total from least to most
+      spreadsheet.getActiveSheet().getFilter().sort(9, true)
+      
       copyNames()
       
     }
