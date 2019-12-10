@@ -137,29 +137,29 @@ function redoFormulas(zip){
   spreadsheet.getRange('E8').clear({contentsOnly: true})
   
   // add two calls for each agent
-  spreadsheet.getRange('Y14').setValue("=zipIt(F14,"+zip+")")
-  spreadsheet.getRange('Y15').setValue("=zipIt(F15,"+zip+")")
-  spreadsheet.getRange('Y16').setValue("=zipIt(F16,"+zip+")")
-  spreadsheet.getRange('Y17').setValue("=zipIt(F17,"+zip+")")
-  spreadsheet.getRange('Y18').setValue("=zipIt(F18,"+zip+")")
-  spreadsheet.getRange('Y19').setValue("=zipIt(F19,"+zip+")")
-  spreadsheet.getRange('Y20').setValue("=zipIt(F20,"+zip+")")
-  spreadsheet.getRange('Y21').setValue("=zipIt(F21,"+zip+")")
-  spreadsheet.getRange('Y22').setValue("=zipIt(F22,"+zip+")")
-  spreadsheet.getRange('Y23').setValue("=zipIt(F23,"+zip+")")
-  spreadsheet.getRange('Y24').setValue("=zipIt(F24,"+zip+")")
+  spreadsheet.getRange('Y14').setValue("=zipIt(F14,E5)")
+  spreadsheet.getRange('Y15').setValue("=zipIt(F15,E5)")
+  spreadsheet.getRange('Y16').setValue("=zipIt(F16,E5)")
+  spreadsheet.getRange('Y17').setValue("=zipIt(F17,E5)")
+  spreadsheet.getRange('Y18').setValue("=zipIt(F18,E5)")
+  spreadsheet.getRange('Y19').setValue("=zipIt(F19,E5)")
+  spreadsheet.getRange('Y20').setValue("=zipIt(F20,E5)")
+  spreadsheet.getRange('Y21').setValue("=zipIt(F21,E5)")
+  spreadsheet.getRange('Y22').setValue("=zipIt(F22,E5)")
+  spreadsheet.getRange('Y23').setValue("=zipIt(F23,E5)")
+  spreadsheet.getRange('Y24').setValue("=zipIt(F24,E5)")
 
-  spreadsheet.getRange('Z14').setValue("=zipIt("+zip+",F14)")
-  spreadsheet.getRange('Z15').setValue("=zipIt("+zip+",F15)")
-  spreadsheet.getRange('Z16').setValue("=zipIt("+zip+",F16)")
-  spreadsheet.getRange('Z17').setValue("=zipIt("+zip+",F17)")
-  spreadsheet.getRange('Z18').setValue("=zipIt("+zip+",F18)")
-  spreadsheet.getRange('Z19').setValue("=zipIt("+zip+",F19)")
-  spreadsheet.getRange('Z20').setValue("=zipIt("+zip+",F20)")
-  spreadsheet.getRange('Z21').setValue("=zipIt("+zip+",F21)")
-  spreadsheet.getRange('Z22').setValue("=zipIt("+zip+",F22)")
-  spreadsheet.getRange('Z23').setValue("=zipIt("+zip+",F23)")
-  spreadsheet.getRange('Z24').setValue("=zipIt("+zip+",F24)")
+  spreadsheet.getRange('Z14').setValue("=zipIt(E5,F14)")
+  spreadsheet.getRange('Z15').setValue("=zipIt(E5,F15)")
+  spreadsheet.getRange('Z16').setValue("=zipIt(E5,F16)")
+  spreadsheet.getRange('Z17').setValue("=zipIt(E5,F17)")
+  spreadsheet.getRange('Z18').setValue("=zipIt(E5,F18)")
+  spreadsheet.getRange('Z19').setValue("=zipIt(E5,F19)")
+  spreadsheet.getRange('Z20').setValue("=zipIt(E5,F20)")
+  spreadsheet.getRange('Z21').setValue("=zipIt(E5,F21)")
+  spreadsheet.getRange('Z22').setValue("=zipIt(E5,F22)")
+  spreadsheet.getRange('Z23').setValue("=zipIt(E5,F23)")
+  spreadsheet.getRange('Z24').setValue("=zipIt(E5,F24)")
   
   // select distance result that isn't an error
   if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
@@ -288,7 +288,9 @@ function updateAgentTimeStamp(){
   
   } else {
     
-    updateMaster()
+    if (spreadsheet.getRange('I8').getValue()){
+      updateMaster()
+    }
     
     var spreadsheet = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
     var queue = spreadsheet.getSheetByName('Queue')
