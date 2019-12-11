@@ -78,6 +78,9 @@ function onEdit(e){
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
     if (rowOfCellEdited === 4 && spreadsheet.getRange('E4').getValue()){
       
+      // if city name is changed
+      agentGrayCell()
+      
       // change zip code to match entered city
       zip = lookupZip()
       spreadsheet.getRange('E5').setValue(zip)
@@ -87,7 +90,12 @@ function onEdit(e){
       redoFilter()
       copyNames()
       
+      agentOrangeCell()
+      
     } else if (rowOfCellEdited === 5 && spreadsheet.getRange('E5').getValue()){
+      
+      // if zip code is changed
+      agentGrayCell()
       
       // change city name to match entered zip code
       var city = lookupCity()
@@ -97,12 +105,16 @@ function onEdit(e){
       redoFormulas(zip)
       redoFilter()
       copyNames()
+      
+      agentOrangeCell()
             
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed
+      agentGrayCell()
       // redoFormulas(zip)
       // redoFilter()
+      
       // Get Radius in E6
       var val = spreadsheet.getRange('E6').getValue()
       
@@ -116,6 +128,8 @@ function onEdit(e){
       spreadsheet.getActiveSheet().getFilter().sort(9, true)
       
       copyNames()
+      
+      agentOrangeCell()
       
     }
   } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
@@ -147,6 +161,7 @@ function redoFormulas(zip){
   
   // clear dropdown
   spreadsheet.getRange('E8').clear({contentsOnly: true})
+  agentGrayCell()
   
   // add two calls for each agent
   spreadsheet.getRange('Y14').setValue("=zipIt(F14,E5)")
@@ -270,22 +285,23 @@ function clearFilters() {
   
   // clear dropdown
   spreadsheet.getRange('E8').clear({contentsOnly: true})
+  agentGrayCell()
 };
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D13:D33').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
   spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  agentOrangeCell()
   return;
 }
 
 function updateAgentTimeStamp(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('F11').setValue('')
+  
+  var spreadsheet = SpreadsheetApp.getActive()
   
   // Check if buyer info is filled out
   if (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue())){
-    spreadsheet.getRange('F11').setValue('')
     if (!spreadsheet.getRange('I5').getValue()) {
       errorBox('I5')
     }
@@ -299,6 +315,9 @@ function updateAgentTimeStamp(){
     errorBox('E8:F9') 
   
   } else {
+    
+    buyerInfoGray()
+    agentGrayCell()
     
     if (spreadsheet.getRange('I8').getValue()){
       updateMaster()
@@ -317,24 +336,21 @@ function updateAgentTimeStamp(){
     var notes = queue.getRange('I11').getValue()
     var zip = queue.getRange('E5').getValue()
     
-    spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
-    spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
-    spreadsheet.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
-    spreadsheet.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
-    spreadsheet.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
-    spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
+    var buyerAgentSheet = spreadsheet.getSheetByName(buyerAgent)
+    
+    if (buyerAgentSheet) {    
+      spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
+      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
+      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
+      spreadsheet.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
+      spreadsheet.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
+      spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
+    }
     
     // clear Buyer Info inputs and redo formatting
-    spreadsheet.getRange('E8:F9').setBackground('#fff2cc')
-    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-    .setHorizontalAlignment('center')
-    .setVerticalAlignment('middle');
+    agentOrangeCell();
     spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
-    spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
-    .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-    .setHorizontalAlignment('left')
-    .setVerticalAlignment('middle');
-    spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    buyerInfoOrange()
     
     // clear city, zip, and miles distances for each agent
     spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
@@ -352,6 +368,7 @@ function updateAgentTimeStamp(){
     // redoFormulas(zip)
     
     copyNames()
+    agentOrangeCell()
   }
 }
 
@@ -458,4 +475,49 @@ function errorBox(cell) {
   .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
   spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
+
+function agentGrayCell(){
+  var spreadsheet = SpreadsheetApp.getActive()
+  spreadsheet.getRange('E4:E6').setBackground('#f3f3f3')
+  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  
+  spreadsheet.getRange('E8:F9').setBackground('#f3f3f3')
+  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+}
+
+function agentOrangeCell(){
+  var spreadsheet = SpreadsheetApp.getActive()
+  spreadsheet.getRange('E4:E6').setBackground('#fff2cc')
+  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  .setHorizontalAlignment('center')
+  .setVerticalAlignment('middle')
+  .setFontSize(13)
+  .setFontFamily('Arial')
+  
+  spreadsheet.getRange('E8:F9').setBackground('#fff2cc')
+  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  .setHorizontalAlignment('center')
+  .setVerticalAlignment('middle')
+  .setFontSize(17)
+  .setFontFamily('Arial')
+}
+
+function buyerInfoGray(){
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('I5:I11').setBackground('#f3f3f3')
+  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
+
+function buyerInfoOrange(){
+  var spreadsheet = SpreadsheetApp.getActive();  
+  spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
+  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  .setHorizontalAlignment('left')
+  .setVerticalAlignment('middle')
+  .setFontSize(11)
+  .setFontFamily('Arial');
+  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
