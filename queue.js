@@ -354,6 +354,7 @@ function updateAgentTimeStamp(){
     
     // clear city, zip, and miles distances for each agent
     spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
+    spreadsheet.getRange('E6').setValue(15)
     spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
     
     // clear the miles radius filter
@@ -488,6 +489,7 @@ function agentCellTurnGray(){
 
 function agentCellTurnOrange(){
   var spreadsheet = SpreadsheetApp.getActive()
+  
   spreadsheet.getRange('E4:E6').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   .setHorizontalAlignment('center')
