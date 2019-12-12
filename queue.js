@@ -79,7 +79,7 @@ function onEdit(e){
     if (rowOfCellEdited === 4 && spreadsheet.getRange('E4').getValue()){
       
       // if city name is changed
-      agentGrayCell()
+      agentCellTurnGray()
       
       // change zip code to match entered city
       zip = lookupZip()
@@ -90,12 +90,12 @@ function onEdit(e){
       redoFilter()
       copyNames()
       
-      agentOrangeCell()
+      agentCellTurnOrange()
       
     } else if (rowOfCellEdited === 5 && spreadsheet.getRange('E5').getValue()){
       
       // if zip code is changed
-      agentGrayCell()
+      agentCellTurnGray()
       
       // change city name to match entered zip code
       var city = lookupCity()
@@ -106,12 +106,12 @@ function onEdit(e){
       redoFilter()
       copyNames()
       
-      agentOrangeCell()
+      agentCellTurnOrange()
             
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed
-      agentGrayCell()
+      agentCellTurnGray()
       // redoFormulas(zip)
       // redoFilter()
       
@@ -129,7 +129,7 @@ function onEdit(e){
       
       copyNames()
       
-      agentOrangeCell()
+      agentCellTurnOrange()
       
     }
   } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
@@ -161,7 +161,7 @@ function redoFormulas(zip){
   
   // clear dropdown
   spreadsheet.getRange('E8').clear({contentsOnly: true})
-  agentGrayCell()
+  agentCellTurnGray()
   
   // add two calls for each agent
   spreadsheet.getRange('Y14').setValue("=zipIt(F14,E5)")
@@ -285,14 +285,14 @@ function clearFilters() {
   
   // clear dropdown
   spreadsheet.getRange('E8').clear({contentsOnly: true})
-  agentGrayCell()
+  agentCellTurnGray()
 };
 
 function copyNames(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('D13:D33').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
   spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
-  agentOrangeCell()
+  agentCellTurnOrange()
   return;
 }
 
@@ -316,8 +316,8 @@ function updateAgentTimeStamp(){
   
   } else {
     
-    buyerInfoGray()
-    agentGrayCell()
+    buyerInfoTurnGray()
+    agentCellTurnGray()
     
     if (spreadsheet.getRange('I8').getValue()){
       updateMaster()
@@ -348,9 +348,9 @@ function updateAgentTimeStamp(){
     }
     
     // clear Buyer Info inputs and redo formatting
-    agentOrangeCell();
+    agentCellTurnOrange();
     spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
-    buyerInfoOrange()
+    buyerInfoTurnOrange()
     
     // clear city, zip, and miles distances for each agent
     spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
@@ -368,7 +368,7 @@ function updateAgentTimeStamp(){
     // redoFormulas(zip)
     
     copyNames()
-    agentOrangeCell()
+    agentCellTurnOrange()
   }
 }
 
@@ -477,7 +477,7 @@ function errorBox(cell) {
   spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
-function agentGrayCell(){
+function agentCellTurnGray(){
   var spreadsheet = SpreadsheetApp.getActive()
   spreadsheet.getRange('E4:E6').setBackground('#f3f3f3')
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
@@ -486,7 +486,7 @@ function agentGrayCell(){
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 }
 
-function agentOrangeCell(){
+function agentCellTurnOrange(){
   var spreadsheet = SpreadsheetApp.getActive()
   spreadsheet.getRange('E4:E6').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
@@ -503,7 +503,7 @@ function agentOrangeCell(){
   .setFontFamily('Arial')
 }
 
-function buyerInfoGray(){
+function buyerInfoTurnGray(){
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('I5:I11').setBackground('#f3f3f3')
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
@@ -511,7 +511,7 @@ function buyerInfoGray(){
   spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
-function buyerInfoOrange(){
+function buyerInfoTurnOrange(){
   var spreadsheet = SpreadsheetApp.getActive();  
   spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
