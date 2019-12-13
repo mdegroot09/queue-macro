@@ -354,7 +354,7 @@ function updateAgentTimeStamp(){
     
     // clear city, zip, and miles distances for each agent
     spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
-    spreadsheet.getRange('E6').setValue(15)
+    spreadsheet.getRange('E6').setValue(20)
     spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
     
     // clear the miles radius filter
@@ -503,10 +503,6 @@ function agentCellTurnOrange(){
   .setVerticalAlignment('middle')
   .setFontSize(17)
   .setFontFamily('Arial')
-  
-  var value = spreadsheet.getRange('D13').offset(1, 0).getValue()
-  spreadsheet.getRange('A1').setValue(value)
-  spreadsheet.getRange('A1')
 }
 
 function buyerInfoTurnGray(){
@@ -526,4 +522,14 @@ function buyerInfoTurnOrange(){
   .setFontSize(11)
   .setFontFamily('Arial');
   spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
+
+function clearParameters() {
+  agentCellTurnGray()
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
+  spreadsheet.getRange('E6').setValue(20)
+  spreadsheet.getRange('E8').clear({contentsOnly: true})
+  spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  agentCellTurnOrange()
 }
