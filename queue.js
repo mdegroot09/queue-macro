@@ -132,7 +132,7 @@ function onEdit(e){
       agentCellTurnOrange()
       
     }
-  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
+//  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
 //    // Check if buyer name is filled out
 //    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
@@ -503,6 +503,10 @@ function agentCellTurnOrange(){
   .setVerticalAlignment('middle')
   .setFontSize(17)
   .setFontFamily('Arial')
+  
+  var value = spreadsheet.getRange('D13').offset(1, 0).getValue()
+  spreadsheet.getRange('A1').setValue(value)
+  spreadsheet.getRange('A1')
 }
 
 function buyerInfoTurnGray(){
