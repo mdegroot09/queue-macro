@@ -30,7 +30,7 @@ function zipIt(zip1, zip2) {
   
   // 2nd Zip Code API call
   
-    // Get lat and lon of zip from zippopotam.us API
+  // Get lat and lon of zip from zippopotam.us API
   var response = UrlFetchApp.fetch("http://api.zippopotam.us/US/" + zip2, {muteHttpExceptions: true});
   
   if (String(response.getResponseCode())[0] === '4'){
@@ -52,7 +52,7 @@ function calcCrow(lat1, lon1, lat2, lon2)
   var dLon = toRad(lon2-lon1);
   var lat1 = toRad(lat1);
   var lat2 = toRad(lat2);
-
+  
   var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
@@ -107,7 +107,7 @@ function onEdit(e){
       copyNames()
       
       agentCellTurnOrange()
-            
+      
     } else if (rowOfCellEdited === 6){
       
       // if Mile Radius is changed
@@ -132,32 +132,37 @@ function onEdit(e){
       agentCellTurnOrange()
       
     }
-//  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
+    //  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
-//    // Check if buyer name is filled out
-//    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
-//      spreadsheet.getRange('F11').setValue('')
-//      if (!spreadsheet.getRange('I5').getValue()) {
-//        errorBox('I5')
-//      }
-//      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
-//        errorBox('I6')
-//        errorBox('I7')
-//      }
-//    //      ui.alert('Please fill out the buyer info.') 
-//    } 
-//    else {
-//      // When F11 is changed to 'ASSIGN', change
-//      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
-//        updateAgentTimeStamp()
-//        spreadsheet.getRange('F11').setValue('')
-//      }
-//    } 
+    //    // Check if buyer name is filled out
+    //    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
+    //      spreadsheet.getRange('F11').setValue('')
+    //      if (!spreadsheet.getRange('I5').getValue()) {
+    //        errorBox('I5')
+    //      }
+    //      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+    //        errorBox('I6')
+    //        errorBox('I7')
+    //      }
+    //    //      ui.alert('Please fill out the buyer info.') 
+    //    } 
+    //    else {
+    //      // When F11 is changed to 'ASSIGN', change
+    //      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
+    //        updateAgentTimeStamp()
+    //        spreadsheet.getRange('F11').setValue('')
+    //      }
+    //    } 
   }
 }
 
 function redoFormulas(zip){
   var spreadsheet = SpreadsheetApp.getActive();
+  
+  // clear radius filter if active
+  if (spreadsheet.getActiveSheet().getFilter().getColumnFilterCriteria(7)){
+    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  }
   
   // clear dropdown
   spreadsheet.getRange('E8').clear({contentsOnly: true})
@@ -175,7 +180,7 @@ function redoFormulas(zip){
   spreadsheet.getRange('Y22').setValue("=zipIt(F22,E5)")
   spreadsheet.getRange('Y23').setValue("=zipIt(F23,E5)")
   spreadsheet.getRange('Y24').setValue("=zipIt(F24,E5)")
-
+  
   spreadsheet.getRange('Z14').setValue("=zipIt(E5,F14)")
   spreadsheet.getRange('Z15').setValue("=zipIt(E5,F15)")
   spreadsheet.getRange('Z16').setValue("=zipIt(E5,F16)")
@@ -309,11 +314,11 @@ function updateAgentTimeStamp(){
       errorBox('I6')
       errorBox('I7')
     }
-  //      ui.alert('Please fill out the buyer info.') 
+    //      ui.alert('Please fill out the buyer info.') 
   } else if(spreadsheet.getRange('E8').isBlank()){
     
     errorBox('E8:F9') 
-  
+    
   } else {
     
     buyerInfoTurnGray()
@@ -365,7 +370,7 @@ function updateAgentTimeStamp(){
     
     // Sort 7-Day Total from least to most
     spreadsheet.getActiveSheet().getFilter().sort(9, true);
-
+    
     // redoFormulas(zip)
     
     copyNames()
@@ -385,7 +390,7 @@ function updateMaster(){
   var tags = spreadsheet.getRange('I10').getValue()
   var notes = spreadsheet.getRange('I11').getValue()
   var zip = spreadsheet.getRange('E5').getValue()
-    
+  
   var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
   var referrals = master.getSheetByName('Referrals')
   
