@@ -535,6 +535,7 @@ function clearParameters() {
   spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
   spreadsheet.getRange('E6').setValue(20)
   spreadsheet.getRange('E8').clear({contentsOnly: true})
+  spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
   spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   agentCellTurnOrange()
 }
