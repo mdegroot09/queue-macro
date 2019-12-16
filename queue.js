@@ -70,20 +70,20 @@ function onEdit(e){
   var range = e.range;
   var columnOfCellEdited = range.getColumn();
   var rowOfCellEdited = range.getRow();
-  var spreadsheet = SpreadsheetApp.getActive();
-  var zip = spreadsheet.getRange('E5').getValue()
+  var ss = SpreadsheetApp.getActive();
+  var zip = ss.getRange('E5').getValue()
   var ui = SpreadsheetApp.getUi()
   
   // only run with zip code or filters is changed
   if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 4 && spreadsheet.getRange('E4').getValue()){
+    if (rowOfCellEdited === 4 && ss.getRange('E4').getValue()){
       
       // if city name is changed
       agentCellTurnGray()
       
       // change zip code to match entered city
       zip = lookupZip()
-      spreadsheet.getRange('E5').setValue(zip)
+      ss.getRange('E5').setValue(zip)
       
       // if City name is changed AND selected
       redoFormulas(zip)
@@ -92,14 +92,14 @@ function onEdit(e){
       
       agentCellTurnOrange()
       
-    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('E5').getValue()){
+    } else if (rowOfCellEdited === 5 && ss.getRange('E5').getValue()){
       
       // if zip code is changed
       agentCellTurnGray()
       
       // change city name to match entered zip code
       var city = lookupCity()
-      spreadsheet.getRange('E4').setValue(city)
+      ss.getRange('E4').setValue(city)
       
       // if Zip Code is changed AND selected
       redoFormulas(zip)
@@ -116,16 +116,16 @@ function onEdit(e){
       // redoFilter()
       
       // Get Radius in E6
-      var val = spreadsheet.getRange('E6').getValue()
+      var val = ss.getRange('E6').getValue()
       
       var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
-      spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
+      ss.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
       
       // Sort Last Lead Received from oldest to youngest
-      spreadsheet.getActiveSheet().getFilter().sort(8, true);
+      ss.getActiveSheet().getFilter().sort(8, true);
       
       // Sort 7-Day Total from least to most
-      spreadsheet.getActiveSheet().getFilter().sort(9, true)
+      ss.getActiveSheet().getFilter().sort(9, true)
       
       copyNames()
       
@@ -135,12 +135,12 @@ function onEdit(e){
     //  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
     //    // Check if buyer name is filled out
-    //    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
-    //      spreadsheet.getRange('F11').setValue('')
-    //      if (!spreadsheet.getRange('I5').getValue()) {
+    //    if (ss.getRange('F11').getValue() === 'Assign' && (!ss.getRange('I5').getValue() || (!ss.getRange('I6').getValue() && !ss.getRange('I7').getValue()))){
+    //      ss.getRange('F11').setValue('')
+    //      if (!ss.getRange('I5').getValue()) {
     //        errorBox('I5')
     //      }
-    //      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+    //      if (!ss.getRange('I6').getValue() && !ss.getRange('I7').getValue()) {
     //        errorBox('I6')
     //        errorBox('I7')
     //      }
@@ -148,116 +148,116 @@ function onEdit(e){
     //    } 
     //    else {
     //      // When F11 is changed to 'ASSIGN', change
-    //      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
+    //      if(ss.getRange('F11').getValue() === 'Assign' && !ss.getRange('E8').isBlank()){
     //        updateAgentTimeStamp()
-    //        spreadsheet.getRange('F11').setValue('')
+    //        ss.getRange('F11').setValue('')
     //      }
     //    } 
   }
 }
 
 function redoFormulas(zip){
-  var spreadsheet = SpreadsheetApp.getActive();
+  var ss = SpreadsheetApp.getActive();
   
   // clear radius filter if active
-  if (spreadsheet.getActiveSheet().getFilter().getColumnFilterCriteria(7)){
-    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  if (ss.getActiveSheet().getFilter().getColumnFilterCriteria(7)){
+    ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   }
   
   // clear dropdown
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
+  ss.getRange('E8').clear({contentsOnly: true})
   agentCellTurnGray()
   
   // add two calls for each agent
-  spreadsheet.getRange('Y14').setValue("=zipIt(F14,E5)")
-  spreadsheet.getRange('Y15').setValue("=zipIt(F15,E5)")
-  spreadsheet.getRange('Y16').setValue("=zipIt(F16,E5)")
-  spreadsheet.getRange('Y17').setValue("=zipIt(F17,E5)")
-  spreadsheet.getRange('Y18').setValue("=zipIt(F18,E5)")
-  spreadsheet.getRange('Y19').setValue("=zipIt(F19,E5)")
-  spreadsheet.getRange('Y20').setValue("=zipIt(F20,E5)")
-  spreadsheet.getRange('Y21').setValue("=zipIt(F21,E5)")
-  spreadsheet.getRange('Y22').setValue("=zipIt(F22,E5)")
-  spreadsheet.getRange('Y23').setValue("=zipIt(F23,E5)")
-  spreadsheet.getRange('Y24').setValue("=zipIt(F24,E5)")
+  ss.getRange('Y14').setValue("=zipIt(F14,E5)")
+  ss.getRange('Y15').setValue("=zipIt(F15,E5)")
+  ss.getRange('Y16').setValue("=zipIt(F16,E5)")
+  ss.getRange('Y17').setValue("=zipIt(F17,E5)")
+  ss.getRange('Y18').setValue("=zipIt(F18,E5)")
+  ss.getRange('Y19').setValue("=zipIt(F19,E5)")
+  ss.getRange('Y20').setValue("=zipIt(F20,E5)")
+  ss.getRange('Y21').setValue("=zipIt(F21,E5)")
+  ss.getRange('Y22').setValue("=zipIt(F22,E5)")
+  ss.getRange('Y23').setValue("=zipIt(F23,E5)")
+  ss.getRange('Y24').setValue("=zipIt(F24,E5)")
   
-  spreadsheet.getRange('Z14').setValue("=zipIt(E5,F14)")
-  spreadsheet.getRange('Z15').setValue("=zipIt(E5,F15)")
-  spreadsheet.getRange('Z16').setValue("=zipIt(E5,F16)")
-  spreadsheet.getRange('Z17').setValue("=zipIt(E5,F17)")
-  spreadsheet.getRange('Z18').setValue("=zipIt(E5,F18)")
-  spreadsheet.getRange('Z19').setValue("=zipIt(E5,F19)")
-  spreadsheet.getRange('Z20').setValue("=zipIt(E5,F20)")
-  spreadsheet.getRange('Z21').setValue("=zipIt(E5,F21)")
-  spreadsheet.getRange('Z22').setValue("=zipIt(E5,F22)")
-  spreadsheet.getRange('Z23').setValue("=zipIt(E5,F23)")
-  spreadsheet.getRange('Z24').setValue("=zipIt(E5,F24)")
+  ss.getRange('Z14').setValue("=zipIt(E5,F14)")
+  ss.getRange('Z15').setValue("=zipIt(E5,F15)")
+  ss.getRange('Z16').setValue("=zipIt(E5,F16)")
+  ss.getRange('Z17').setValue("=zipIt(E5,F17)")
+  ss.getRange('Z18').setValue("=zipIt(E5,F18)")
+  ss.getRange('Z19').setValue("=zipIt(E5,F19)")
+  ss.getRange('Z20').setValue("=zipIt(E5,F20)")
+  ss.getRange('Z21').setValue("=zipIt(E5,F21)")
+  ss.getRange('Z22').setValue("=zipIt(E5,F22)")
+  ss.getRange('Z23').setValue("=zipIt(E5,F23)")
+  ss.getRange('Z24').setValue("=zipIt(E5,F24)")
   
   // select distance result that isn't an error
-  if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G14').setValue(spreadsheet.getRange('Y14').getValue())
+  if (ss.getRange('Y14').getValue() !== "#ERROR!"){
+    ss.getRange('G14').setValue(ss.getRange('Y14').getValue())
   } else {
-    spreadsheet.getRange('G14').setValue(spreadsheet.getRange('Z14').getValue())
+    ss.getRange('G14').setValue(ss.getRange('Z14').getValue())
   }
   
-  if (spreadsheet.getRange('Y15').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G15').setValue(spreadsheet.getRange('Y15').getValue())
+  if (ss.getRange('Y15').getValue() !== "#ERROR!"){
+    ss.getRange('G15').setValue(ss.getRange('Y15').getValue())
   } else {
-    spreadsheet.getRange('G15').setValue(spreadsheet.getRange('Z15').getValue())
+    ss.getRange('G15').setValue(ss.getRange('Z15').getValue())
   }
   
-  if (spreadsheet.getRange('Y16').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G16').setValue(spreadsheet.getRange('Y16').getValue())
+  if (ss.getRange('Y16').getValue() !== "#ERROR!"){
+    ss.getRange('G16').setValue(ss.getRange('Y16').getValue())
   } else {
-    spreadsheet.getRange('G16').setValue(spreadsheet.getRange('Z16').getValue())
+    ss.getRange('G16').setValue(ss.getRange('Z16').getValue())
   }
   
-  if (spreadsheet.getRange('Y17').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G17').setValue(spreadsheet.getRange('Y17').getValue())
+  if (ss.getRange('Y17').getValue() !== "#ERROR!"){
+    ss.getRange('G17').setValue(ss.getRange('Y17').getValue())
   } else {
-    spreadsheet.getRange('G17').setValue(spreadsheet.getRange('Z17').getValue())
+    ss.getRange('G17').setValue(ss.getRange('Z17').getValue())
   }
   
-  if (spreadsheet.getRange('Y18').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G18').setValue(spreadsheet.getRange('Y18').getValue())
+  if (ss.getRange('Y18').getValue() !== "#ERROR!"){
+    ss.getRange('G18').setValue(ss.getRange('Y18').getValue())
   } else {
-    spreadsheet.getRange('G18').setValue(spreadsheet.getRange('Z18').getValue())
+    ss.getRange('G18').setValue(ss.getRange('Z18').getValue())
   }
   
-  if (spreadsheet.getRange('Y19').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G19').setValue(spreadsheet.getRange('Y19').getValue())
+  if (ss.getRange('Y19').getValue() !== "#ERROR!"){
+    ss.getRange('G19').setValue(ss.getRange('Y19').getValue())
   } else {
-    spreadsheet.getRange('G19').setValue(spreadsheet.getRange('Z19').getValue())
+    ss.getRange('G19').setValue(ss.getRange('Z19').getValue())
   }
   
-  if (spreadsheet.getRange('Y20').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Y20').getValue())
+  if (ss.getRange('Y20').getValue() !== "#ERROR!"){
+    ss.getRange('G20').setValue(ss.getRange('Y20').getValue())
   } else {
-    spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Z20').getValue())
+    ss.getRange('G20').setValue(ss.getRange('Z20').getValue())
   }
   
-  if (spreadsheet.getRange('Y21').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Y21').getValue())
+  if (ss.getRange('Y21').getValue() !== "#ERROR!"){
+    ss.getRange('G21').setValue(ss.getRange('Y21').getValue())
   } else {
-    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Z21').getValue())
+    ss.getRange('G21').setValue(ss.getRange('Z21').getValue())
   }
   
-  if (spreadsheet.getRange('Y22').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Y22').getValue())
+  if (ss.getRange('Y22').getValue() !== "#ERROR!"){
+    ss.getRange('G22').setValue(ss.getRange('Y22').getValue())
   } else {
-    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Z22').getValue())
+    ss.getRange('G22').setValue(ss.getRange('Z22').getValue())
   }
   
-  if (spreadsheet.getRange('Y23').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Y23').getValue())
+  if (ss.getRange('Y23').getValue() !== "#ERROR!"){
+    ss.getRange('G23').setValue(ss.getRange('Y23').getValue())
   } else {
-    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Z23').getValue())
+    ss.getRange('G23').setValue(ss.getRange('Z23').getValue())
   }
   
-  if (spreadsheet.getRange('Y24').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Y24').getValue())
+  if (ss.getRange('Y24').getValue() !== "#ERROR!"){
+    ss.getRange('G24').setValue(ss.getRange('Y24').getValue())
   } else {
-    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Z24').getValue())
+    ss.getRange('G24').setValue(ss.getRange('Z24').getValue())
   }
 }
 
@@ -265,57 +265,57 @@ function redoFilter() {
   clearFilters()
   
   // Recreate filter
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D13:I24').createFilter();
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('D13:I24').createFilter();
   
   // Get Radius in E6
-  var val = spreadsheet.getRange('E6').getValue()
+  var val = ss.getRange('E6').getValue()
   
   var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
-  spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
+  ss.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
   
   // Sort Last Lead Received from oldest to youngest
-  spreadsheet.getActiveSheet().getFilter().sort(8, true);
+  ss.getActiveSheet().getFilter().sort(8, true);
   
   // Sort 7-Day Total from least to most
-  spreadsheet.getActiveSheet().getFilter().sort(9, true);
+  ss.getActiveSheet().getFilter().sort(9, true);
 };
 
 function clearFilters() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getActiveSheet().getFilter().remove();
+  var ss = SpreadsheetApp.getActive();
+  ss.getActiveSheet().getFilter().remove();
   
   // clear column h cells
-  spreadsheet.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
+  ss.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
   
   // clear dropdown
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
+  ss.getRange('E8').clear({contentsOnly: true})
   agentCellTurnGray()
 };
 
 function copyNames(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D13:D33').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('D13:D33').copyTo(ss.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  ss.getRange('L2').copyTo(ss.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
   agentCellTurnOrange()
   return;
 }
 
 function updateAgentTimeStamp(){
   
-  var spreadsheet = SpreadsheetApp.getActive()
+  var ss = SpreadsheetApp.getActive()
   
   // Check if buyer info is filled out
-  if (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue())){
-    if (!spreadsheet.getRange('I5').getValue()) {
+  if (!ss.getRange('I5').getValue() || (!ss.getRange('I6').getValue() && !ss.getRange('I7').getValue())){
+    if (!ss.getRange('I5').getValue()) {
       errorBox('I5')
     }
-    if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
+    if (!ss.getRange('I6').getValue() && !ss.getRange('I7').getValue()) {
       errorBox('I6')
       errorBox('I7')
     }
     //      ui.alert('Please fill out the buyer info.') 
-  } else if(spreadsheet.getRange('E8').isBlank()){
+  } else if(ss.getRange('E8').isBlank()){
     
     errorBox('E8:F9') 
     
@@ -324,12 +324,12 @@ function updateAgentTimeStamp(){
     buyerInfoTurnGray()
     agentCellTurnGray()
     
-    if (spreadsheet.getRange('I8').getValue()){
+    if (ss.getRange('I8').getValue()){
       updateMaster()
     }
     
-    var spreadsheet = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
-    var queue = spreadsheet.getSheetByName('Queue')
+    var ss = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
+    var queue = ss.getSheetByName('Queue')
     
     var buyerAgent = queue.getRange('E8').getValue()
     var buyerName = queue.getRange('I5').getValue()
@@ -341,56 +341,55 @@ function updateAgentTimeStamp(){
     var notes = queue.getRange('I11').getValue()
     var zip = queue.getRange('E5').getValue()
     
-    var buyerAgentSheet = spreadsheet.getSheetByName(buyerAgent)
+    var buyerAgentSheet = ss.getSheetByName(buyerAgent)
     
     if (buyerAgentSheet) {    
-      spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
-      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
-      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
-      spreadsheet.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
-      spreadsheet.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
-      spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
+      ss.getSheetByName(buyerAgent).insertRowsBefore(9,1)
+      ss.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
+      ss.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
+      ss.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
+      ss.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
+      ss.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
     }
     
     // clear Buyer Info inputs and redo formatting
     agentCellTurnOrange();
-    spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
+    ss.getRange('I5:I11').clear({contentsOnly: true})
     buyerInfoTurnOrange()
     
     // clear city, zip, and miles distances for each agent
-    spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
-    spreadsheet.getRange('E6').setValue(20)
-    spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
+    ss.getRange('E4:E5').clear({contentsOnly: true})
+    ss.getRange('E6').setValue(20)
+    ss.getRange('G14:G24').clear({contentsOnly: true})
     
     // clear the miles radius filter
-    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+    ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
     
     // Sort Last Lead Received from oldest to youngest
-    spreadsheet.getActiveSheet().getFilter().sort(8, true);
+    ss.getActiveSheet().getFilter().sort(8, true);
     
     // Sort 7-Day Total from least to most
-    spreadsheet.getActiveSheet().getFilter().sort(9, true);
+    ss.getActiveSheet().getFilter().sort(9, true);
     
     // redoFormulas(zip)
     
     copyNames()
-    spreadsheet.getRange('E8').clear({contentsOnly: true})
+    ss.getRange('E8').clear({contentsOnly: true})
     agentCellTurnOrange()
   }
 }
 
-
 function updateMaster(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  var buyerAgent = spreadsheet.getRange('E8').getValue()
-  var buyerName = spreadsheet.getRange('I5').getValue()
-  var buyerPhone = spreadsheet.getRange('I6').getValue()
-  var buyerEmail = spreadsheet.getRange('I7').getValue()
-  var listingAgent = spreadsheet.getRange('I8').getValue()
-  var source = spreadsheet.getRange('I9').getValue()
-  var tags = spreadsheet.getRange('I10').getValue()
-  var notes = spreadsheet.getRange('I11').getValue()
-  var zip = spreadsheet.getRange('E5').getValue()
+  var ss = SpreadsheetApp.getActive();
+  var buyerAgent = ss.getRange('E8').getValue()
+  var buyerName = ss.getRange('I5').getValue()
+  var buyerPhone = ss.getRange('I6').getValue()
+  var buyerEmail = ss.getRange('I7').getValue()
+  var listingAgent = ss.getRange('I8').getValue()
+  var source = ss.getRange('I9').getValue()
+  var tags = ss.getRange('I10').getValue()
+  var notes = ss.getRange('I11').getValue()
+  var zip = ss.getRange('E5').getValue()
   
   var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
   var referrals = master.getSheetByName('Referrals')
@@ -416,94 +415,94 @@ function updateMaster(){
 }
 
 function toggleCheckboxes(rowOfCellEdited){
-  var spreadsheet = SpreadsheetApp.getActive();
+  var ss = SpreadsheetApp.getActive();
   if (rowOfCellEdited === 4){
-    if (spreadsheet.getRange('C4').isChecked()){
+    if (ss.getRange('C4').isChecked()){
       lightenZip()
-      spreadsheet.getRange('C5').setValue(false)
+      ss.getRange('C5').setValue(false)
     } else {
       lightenCity()
-      spreadsheet.getRange('C5').setValue(true)
+      ss.getRange('C5').setValue(true)
     }
   } else {
-    if (spreadsheet.getRange('C5').isChecked()){
+    if (ss.getRange('C5').isChecked()){
       lightenCity()
-      spreadsheet.getRange('C4').setValue(false)
+      ss.getRange('C4').setValue(false)
     } else {
       lightenZip()
-      spreadsheet.getRange('C4').setValue(true)
+      ss.getRange('C4').setValue(true)
     }
   }
 } 
 
 function lookupCity() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  if (spreadsheet.getRange('E5').getValue()){
-    spreadsheet.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D391,3,false)');
-    return spreadsheet.getRange('E4').getValue()
+  var ss = SpreadsheetApp.getActive();
+  if (ss.getRange('E5').getValue()){
+    ss.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D391,3,false)');
+    return ss.getRange('E4').getValue()
   } else {
     return ''
   }
 }
 
 function lookupZip(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  if (spreadsheet.getRange('E4').getValue()){
-    spreadsheet.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B391,2,false)'); 
-    return spreadsheet.getRange('E5').getValue()
+  var ss = SpreadsheetApp.getActive();
+  if (ss.getRange('E4').getValue()){
+    ss.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B391,2,false)'); 
+    return ss.getRange('E5').getValue()
   } else {
     return ''
   }
 }
 
 function lightenCity() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D4:E4').setFontColor('#cccccc')
-  spreadsheet.getRange('E4').setBackground('#fefefe')
-  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('D5:E5').setFontColor('#3e494c')
-  spreadsheet.getRange('E5').setBackground('#fff2cc')
-  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('D4:E4').setFontColor('#cccccc')
+  ss.getRange('E4').setBackground('#fefefe')
+  ss.getRange('E4').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  ss.getRange('D5:E5').setFontColor('#3e494c')
+  ss.getRange('E5').setBackground('#fff2cc')
+  ss.getRange('E5').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 }
 
 function lightenZip() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D5:E5').setFontColor('#cccccc')
-  spreadsheet.getRange('E5').setBackground('#fefefe')
-  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('D4:E4').setFontColor('#3e494c')
-  spreadsheet.getRange('E4').setBackground('#fff2cc')
-  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('D5:E5').setFontColor('#cccccc')
+  ss.getRange('E5').setBackground('#fefefe')
+  ss.getRange('E5').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  ss.getRange('D4:E4').setFontColor('#3e494c')
+  ss.getRange('E4').setBackground('#fff2cc')
+  ss.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 }
 
 function errorBox(cell) {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange(cell).setBackground('#f4cccc')
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange(cell).setBackground('#f4cccc')
   .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  ss.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  ss.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
 function agentCellTurnGray(){
-  var spreadsheet = SpreadsheetApp.getActive()
-  spreadsheet.getRange('E4:E6').setBackground('#f3f3f3')
+  var ss = SpreadsheetApp.getActive()
+  ss.getRange('E4:E6').setBackground('#f3f3f3')
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   
-  spreadsheet.getRange('E8:F9').setBackground('#f3f3f3')
+  ss.getRange('E8:F9').setBackground('#f3f3f3')
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 }
 
 function agentCellTurnOrange(){
-  var spreadsheet = SpreadsheetApp.getActive()
+  var ss = SpreadsheetApp.getActive()
   
-  spreadsheet.getRange('E4:E6').setBackground('#fff2cc')
+  ss.getRange('E4:E6').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   .setHorizontalAlignment('center')
   .setVerticalAlignment('middle')
   .setFontSize(13)
   .setFontFamily('Arial')
   
-  spreadsheet.getRange('E8:F9').setBackground('#fff2cc')
+  ss.getRange('E8:F9').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   .setHorizontalAlignment('center')
   .setVerticalAlignment('middle')
@@ -512,31 +511,31 @@ function agentCellTurnOrange(){
 }
 
 function buyerInfoTurnGray(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('I5:I11').setBackground('#f3f3f3')
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('I5:I11').setBackground('#f3f3f3')
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  ss.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
 function buyerInfoTurnOrange(){
-  var spreadsheet = SpreadsheetApp.getActive();  
-  spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
+  var ss = SpreadsheetApp.getActive();  
+  ss.getRange('I5:I11').setBackground('#fff2cc')
   .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   .setHorizontalAlignment('left')
   .setVerticalAlignment('middle')
   .setFontSize(11)
   .setFontFamily('Arial');
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  ss.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 }
 
 function clearParameters() {
   agentCellTurnGray()
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
-  spreadsheet.getRange('E6').setValue(20)
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
-  spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
-  spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  var ss = SpreadsheetApp.getActive();
+  ss.getRange('E4:E5').clear({contentsOnly: true})
+  ss.getRange('E6').setValue(20)
+  ss.getRange('E8').clear({contentsOnly: true})
+  ss.getRange('G14:G24').clear({contentsOnly: true})
+  ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   agentCellTurnOrange()
 }
