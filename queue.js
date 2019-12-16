@@ -81,6 +81,11 @@ function onEdit(e){
       // if city name is changed
       agentCellTurnGray()
       
+      // Capitalize city name
+      var word = ss.getRange('E4').getValue()
+      var wordUppercase = word.charAt(0).toUpperCase() + word.slice(1)
+      ss.getRange('E4').setValue(wordUppercase)
+      
       // change zip code to match entered city
       zip = lookupZip()
       ss.getRange('E5').setValue(zip)
