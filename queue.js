@@ -330,7 +330,7 @@ function updateAgentTimeStamp(){
     agentCellTurnGray()
     
     if (ss.getRange('I8').getValue()){
-      updateMaster()
+      updateAgentSS()
     }
     
     var ss = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
@@ -384,7 +384,7 @@ function updateAgentTimeStamp(){
   }
 }
 
-function updateMaster(){
+function updateAgentSS(){
   var ss = SpreadsheetApp.getActive();
   var buyerAgent = ss.getRange('E8').getValue()
   var buyerName = ss.getRange('I5').getValue()
@@ -396,27 +396,29 @@ function updateMaster(){
   var notes = ss.getRange('I11').getValue()
   var zip = ss.getRange('E5').getValue()
   
-  var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
-  var referrals = master.getSheetByName('Referrals')
   
-  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
-  referrals.getRange('A4').setValue(buyerName)
-  referrals.getRange('B4').setValue(listingAgent)
-  referrals.getRange('C4').setValue('Lead')
-  referrals.getRange('D4').setValue(600)
-  referrals.getRange('E4').setValue(source)
-  referrals.getRange('G4').setValue(buyerAgent)
-  referrals.getRange('H4').setValue('Open')
-  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
-  referrals.getRange('L4').setValue(tags)
-  referrals.getRange('M4').setValue(notes)
-  referrals.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
-  referrals.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
-  referrals.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-  referrals.getRange('Q4').setValue('=TODAY()')
-  referrals.getRange('Q4').setNumberFormat('m"/"d"/"yy')
-  var date = referrals.getRange('Q4').getValue()
-  referrals.getRange('Q4').setValue(date)
+  
+  var agentSS = SpreadsheetApp.openById('1yZxEg7LhdyeDa9crk4HrLgCQo0_4yaCxyjUvBKtm9lA')
+  var hotWarmLeads = agentSS.getSheetByName('Hot/Warm Leads')
+  
+  hotWarmLeads.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
+  hotWarmLeads.getRange('A4').setValue(buyerName)
+  hotWarmLeads.getRange('B4').setValue(listingAgent)
+  hotWarmLeads.getRange('C4').setValue('Lead')
+  hotWarmLeads.getRange('D4').setValue(600)
+  hotWarmLeads.getRange('E4').setValue(source)
+  hotWarmLeads.getRange('G4').setValue(buyerAgent)
+  hotWarmLeads.getRange('H4').setValue('Open')
+  hotWarmLeads.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+  hotWarmLeads.getRange('L4').setValue(tags)
+  hotWarmLeads.getRange('M4').setValue(notes)
+  hotWarmLeads.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
+  hotWarmLeads.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
+  hotWarmLeads.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
+  hotWarmLeads.getRange('Q4').setValue('=TODAY()')
+  hotWarmLeads.getRange('Q4').setNumberFormat('m"/"d"/"yy')
+  var date = hotWarmLeads.getRange('Q4').getValue()
+  hotWarmLeads.getRange('Q4').setValue(date)
 }
 
 function toggleCheckboxes(rowOfCellEdited){
@@ -542,5 +544,6 @@ function clearParameters() {
   ss.getRange('E8').clear({contentsOnly: true})
   ss.getRange('G14:G24').clear({contentsOnly: true})
   ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+//  MailApp.sendEmail('mike.degroot@homie.com', 'test', 'This is a test email')
   agentCellTurnOrange()
 }
