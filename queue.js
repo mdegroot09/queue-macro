@@ -421,27 +421,6 @@ function updateAgentSS(){
   hotWarmLeads.getRange('Q4').setValue(date)
 }
 
-function toggleCheckboxes(rowOfCellEdited){
-  var ss = SpreadsheetApp.getActive();
-  if (rowOfCellEdited === 4){
-    if (ss.getRange('C4').isChecked()){
-      lightenZip()
-      ss.getRange('C5').setValue(false)
-    } else {
-      lightenCity()
-      ss.getRange('C5').setValue(true)
-    }
-  } else {
-    if (ss.getRange('C5').isChecked()){
-      lightenCity()
-      ss.getRange('C4').setValue(false)
-    } else {
-      lightenZip()
-      ss.getRange('C4').setValue(true)
-    }
-  }
-} 
-
 function lookupCity() {
   var ss = SpreadsheetApp.getActive();
   if (ss.getRange('E5').getValue()){
