@@ -154,7 +154,7 @@ function onEdit(e){
     //    else {
     //      // When F11 is changed to 'ASSIGN', change
     //      if(ss.getRange('F11').getValue() === 'Assign' && !ss.getRange('E8').isBlank()){
-    //        updateAgentTimeStamp()
+    //        assignAgent()
     //        ss.getRange('F11').setValue('')
     //      }
     //    } 
@@ -306,7 +306,7 @@ function copyNames(){
   return;
 }
 
-function updateAgentTimeStamp(){
+function assignAgent(){
   
   var ss = SpreadsheetApp.getActive()
   
@@ -396,29 +396,32 @@ function updateAgentSS(){
   var notes = ss.getRange('I11').getValue()
   var zip = ss.getRange('E5').getValue()
   
-  
-  
   var agentSS = SpreadsheetApp.openById('1yZxEg7LhdyeDa9crk4HrLgCQo0_4yaCxyjUvBKtm9lA')
   var hotWarmLeads = agentSS.getSheetByName('Hot/Warm Leads')
   
   hotWarmLeads.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
   hotWarmLeads.getRange('A4').setValue(buyerName)
-  hotWarmLeads.getRange('B4').setValue(listingAgent)
-  hotWarmLeads.getRange('C4').setValue('Lead')
-  hotWarmLeads.getRange('D4').setValue(600)
-  hotWarmLeads.getRange('E4').setValue(source)
-  hotWarmLeads.getRange('G4').setValue(buyerAgent)
-  hotWarmLeads.getRange('H4').setValue('Open')
-  hotWarmLeads.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
-  hotWarmLeads.getRange('L4').setValue(tags)
-  hotWarmLeads.getRange('M4').setValue(notes)
-  hotWarmLeads.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
-  hotWarmLeads.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
-  hotWarmLeads.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-  hotWarmLeads.getRange('Q4').setValue('=TODAY()')
-  hotWarmLeads.getRange('Q4').setNumberFormat('m"/"d"/"yy')
-  var date = hotWarmLeads.getRange('Q4').getValue()
-  hotWarmLeads.getRange('Q4').setValue(date)
+//  hotWarmLeads.getRange('B4').setValue()
+//  hotWarmLeads.getRange('C4').setValue()
+  hotWarmLeads.getRange('D4').setValue(buyerPhone)
+  hotWarmLeads.getRange('E4').setValue(buyerEmail)
+  hotWarmLeads.getRange('F4').setValue(listingAgent)
+  hotWarmLeads.getRange('G4').setValue('New Lead')
+  hotWarmLeads.getRange('H4').setValue(600)
+  hotWarmLeads.getRange('I4').setValue(source)
+//  hotWarmLeads.getRange('J4').setValue()
+  hotWarmLeads.getRange('K4').setValue(buyerAgent)
+  hotWarmLeads.getRange('L4').setValue('Open')
+  hotWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+  hotWarmLeads.getRange('P4').setValue(tags)
+  hotWarmLeads.getRange('Q4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
+  hotWarmLeads.getRange('R4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
+  hotWarmLeads.getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
+  hotWarmLeads.getRange('AA4').setValue('=TODAY()')
+  hotWarmLeads.getRange('AA4').setNumberFormat('m"/"d"/"yy')
+  var date = hotWarmLeads.getRange('AA4').getValue()
+  hotWarmLeads.getRange('AA4').setValue(date)
+  hotWarmLeads.getRange('AB4').setValue(notes)
 }
 
 function lookupCity() {
