@@ -329,11 +329,9 @@ function assignAgent(){
     buyerInfoTurnGray()
     agentCellTurnGray()
     
-    if (ss.getRange('I8').getValue()){
-      updateAgentSS()
-    }
-    
-    var ss = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
+    updateAgentSS()
+        
+    var ss = SpreadsheetApp.getActive()
     var queue = ss.getSheetByName('Queue')
     
     var buyerAgent = queue.getRange('E8').getValue()
@@ -358,9 +356,7 @@ function assignAgent(){
     }
     
     // clear Buyer Info inputs and redo formatting
-    agentCellTurnOrange();
     ss.getRange('I5:I11').clear({contentsOnly: true})
-    buyerInfoTurnOrange()
     
     // clear city, zip, and miles distances for each agent
     ss.getRange('E4:E5').clear({contentsOnly: true})
@@ -381,6 +377,7 @@ function assignAgent(){
     copyNames()
     ss.getRange('E8').clear({contentsOnly: true})
     agentCellTurnOrange()
+    buyerInfoTurnOrange()
   }
 }
 
@@ -397,9 +394,9 @@ function updateAgentSS(){
   var zip = ss.getRange('E5').getValue()
   
   var agentSS = SpreadsheetApp.openById('1yZxEg7LhdyeDa9crk4HrLgCQo0_4yaCxyjUvBKtm9lA')
-  var hotWarmLeads = agentSS.getSheetByName('Hot/Warm Leads')
+  var hotWarmLeads = agentSS.getSheetByName('New/Warm Leads')
   
-  hotWarmLeads.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
+  hotWarmLeads.insertRowsBefore(hotWarmLeads.getRange('4:4').getRow(), 1);  
   hotWarmLeads.getRange('A4').setValue(buyerName)
 //  hotWarmLeads.getRange('B4').setValue()
 //  hotWarmLeads.getRange('C4').setValue()
