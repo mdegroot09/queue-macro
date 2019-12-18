@@ -333,7 +333,7 @@ function assignAgent(){
       updateAgentSS()
     }
     
-    var ss = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
+    var ss = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
     var queue = ss.getSheetByName('Queue')
     
     var buyerAgent = queue.getRange('E8').getValue()
