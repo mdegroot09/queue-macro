@@ -404,15 +404,17 @@ function updateAgentSS(){
   hotWarmLeads.getRange('E4').setValue(buyerEmail)
   hotWarmLeads.getRange('F4').setValue(listingAgent)
   hotWarmLeads.getRange('G4').setValue('New Lead')
-  hotWarmLeads.getRange('H4').setValue(600)
-  hotWarmLeads.getRange('I4').setValue(source)
+  if (listingAgent){
+    hotWarmLeads.getRange('H4').setValue(600)
+    hotWarmLeads.getRange('I4').setValue(source)
+  }
 //  hotWarmLeads.getRange('J4').setValue()
   hotWarmLeads.getRange('K4').setValue(buyerAgent)
   hotWarmLeads.getRange('L4').setValue('Open')
   hotWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
   hotWarmLeads.getRange('P4').setValue(tags)
-  hotWarmLeads.getRange('Q4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
-  hotWarmLeads.getRange('R4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
+  hotWarmLeads.getRange('Q4').setFormula('=IF(J4="","",IFS(J4="TBD","TBD",MONTH(J4)=1,"January",MONTH(J4)=2,"February",MONTH(J4)=3,"March",MONTH(J4)=4,"April",MONTH(J4)=5,"May",MONTH(J4)=6,"June",MONTH(J4)=7,"July",MONTH(J4)=8,"August",MONTH(J4)=9,"September",MONTH(J4)=10,"October",MONTH(J4)=11,"November",MONTH(J4)=12,"December"))');
+  hotWarmLeads.getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
   hotWarmLeads.getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
   hotWarmLeads.getRange('AA4').setValue('=TODAY()')
   hotWarmLeads.getRange('AA4').setNumberFormat('m"/"d"/"yy')
