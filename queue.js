@@ -137,6 +137,8 @@ function onEdit(e){
       agentCellTurnOrange()
       
     }
+    
+    // Run macro on dropdown select
     //  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
     
     //    // Check if buyer name is filled out
@@ -158,6 +160,7 @@ function onEdit(e){
     //        ss.getRange('F11').setValue('')
     //      }
     //    } 
+    
   }
 }
 
@@ -363,7 +366,7 @@ function assignAgent(){
     ss.getSheetByName('Raw Data').getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
     ss.getSheetByName('Raw Data').getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
     ss.getSheetByName('Raw Data').getRange('AA4').setValue('=TODAY()')
-    ss.getSheetByName('Raw Data').getRange('AA4').setNumberFormat('m"/"d"/"yy')
+    ss.getSheetByName('Raw Data').getRange('AA4').setNumberFormat('m"/"d" "h":"mma/p')
     var date = ss.getSheetByName('Raw Data').getRange('AA4').getValue()
     ss.getSheetByName('Raw Data').getRange('AA4').setValue(date)
     ss.getSheetByName('Raw Data').getRange('AB4').setValue(notes)
@@ -428,7 +431,7 @@ function updateAgentSS(){
   hotWarmLeads.getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
   hotWarmLeads.getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
   hotWarmLeads.getRange('AA4').setValue('=TODAY()')
-  hotWarmLeads.getRange('AA4').setNumberFormat('m"/"d"/"yy')
+  hotWarmLeads.getRange('AA4').setNumberFormat('m"/"d" "h":"mma/p')
   var date = hotWarmLeads.getRange('AA4').getValue()
   hotWarmLeads.getRange('AA4').setValue(date)
   hotWarmLeads.getRange('AB4').setValue(notes)
