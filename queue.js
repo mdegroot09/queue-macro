@@ -1,541 +1,536 @@
-function zipIt(zip1, zip2) {
-  // zip codes 84009 and 84129 are not recognized by api.zippopotam.us
-  if(zip1 === 84009){
-    zip1 = 84095 
-  } else if (zip1 === 84129){
-    zip1 = 84123
-  } 
-  
-  if (zip2 === 84009){
-    zip2 = 84095
-  } else if (zip2 === 84129){
-    zip2 = 84123
-  }
-  
-  
-  // 1st Zip Code API call
-  
-  // Get lat and lon of zip from zippopotam.us API
-  var response = UrlFetchApp.fetch("http://api.zippopotam.us/US/" + zip1, {muteHttpExceptions: true});
-  
-  if (String(response.getResponseCode())[0] === '4'){
-    return "Zip code not found"
-  }
-  
-  var a = JSON.parse(response.getContentText());
-  
-  var lat1 = a.places[0].latitude 
-  var lon1 = a.places[0].longitude
-  
-  
-  // 2nd Zip Code API call
-  
-  // Get lat and lon of zip from zippopotam.us API
-  var response = UrlFetchApp.fetch("http://api.zippopotam.us/US/" + zip2, {muteHttpExceptions: true});
-  
-  if (String(response.getResponseCode())[0] === '4'){
-    return "Zip code not found"
-  }
-  
-  var b = JSON.parse(response.getContentText());
-  var lat2 = b.places[0].latitude 
-  var lon2 = b.places[0].longitude
-  
-  return calcCrow(lat1, lon1, lat2, lon2)
-}
-
-//This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
-function calcCrow(lat1, lon1, lat2, lon2) 
-{
-  var R = 6371; // km
-  var dLat = toRad(lat2-lat1);
-  var dLon = toRad(lon2-lon1);
-  var lat1 = toRad(lat1);
-  var lat2 = toRad(lat2);
-  
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  var d = R * c;  
-  return d
-}
-
-// Converts numeric degrees to radians
-function toRad(Value) 
-{
-  return (Value * Math.PI / 180) * 0.621371;
-}
-
 function onEdit(e){
   var range = e.range;
-  var columnOfCellEdited = range.getColumn();
-  var rowOfCellEdited = range.getRow();
-  var spreadsheet = SpreadsheetApp.getActive();
-  var zip = spreadsheet.getRange('E5').getValue()
+  var columnEdited = range.getColumn();
+  var rowEdited = range.getRow();
+  var ss = SpreadsheetApp.getActive();
+  var sheetName = ss.getActiveSheet().getName()
+  
+  // Check for stage or status change in New/Warm Leads tab 
+  if (sheetName === 'New/Warm Leads' && (columnEdited === 7 || columnEdited === 12)){
+    var cell = range.getA1Notation()
+    var val = ss.getRange(cell).getValue()
+    
+    // Moving from New/Warm Lead to Opportunity 
+    if ((val === 'Searching' || val === 'Touring' || val === 'Offering' || val === 'UC') && columnEdited === 7){
+      return moveToOpp(rowEdited)
+    }
+    
+    // Moving from New/Warm Lead to Cold Lead 
+    else if (val === 'Cold Lead' && columnEdited === 7){
+      return moveToCold(rowEdited)
+    }
+    
+    // Moving from New/Warm Lead to Archive 
+    else if ((val === 'Closed' && columnEdited === 7) || ((val === 'Lost' || val === 'Abandoned') && columnEdited === 12)){
+      if (val === 'Closed'){
+        var closedDateExists = checkClosedDate(rowEdited)
+        if (!closedDateExists) {
+          return
+        }
+        else {
+          return archive(rowEdited)
+        }
+      }
+      else {
+        return archive(rowEdited)
+      }
+    }
+  }
+  
+  // Check for stage or status change in Cold Leads tab
+  else if (sheetName === 'Cold Leads' && (columnEdited === 7 || columnEdited === 12)){
+    var cell = range.getA1Notation()
+    var val = ss.getRange(cell).getValue()
+    
+    // Moving from Cold Lead to Opportunity 
+    if ((val === 'Searching' || val === 'Touring' || val === 'Offering' || val === 'UC') && columnEdited === 7){
+      return moveToOpp(rowEdited)
+    }
+    
+    // Moving from Cold Lead to New/Warm Lead 
+    else if ((val === 'Warm Lead' || val === 'New Lead') && columnEdited === 7){
+      return moveToWarm(rowEdited)
+    }
+    
+    // Moving from Cold Lead to Archive  
+    else if ((val === 'Closed' && columnEdited === 7) || ((val === 'Lost' || val === 'Abandoned') && columnEdited === 12)){
+      if (val === 'Closed'){
+        var closedDateExists = checkClosedDate(rowEdited)
+        if (!closedDateExists) {
+          return
+        }
+        else {
+          return archive(rowEdited)
+        }
+      }
+      else {
+        return archive(rowEdited)
+      }
+    }
+  }
+  
+  // Check for stage or status change in Opportunity tab
+  else if (sheetName === 'Opportunities' && (columnEdited === 7 || columnEdited === 12)){
+    var cell = range.getA1Notation()
+    var val = ss.getRange(cell).getValue()
+    
+    // Moving from Opportunity to Cold Lead 
+    if (val === 'Cold Lead' && columnEdited === 7){
+      return moveToCold(rowEdited)
+    }
+    
+    // Moving from Opportunity to New/Warm Lead 
+    else if ((val === 'Warm Lead' || val === 'New Lead') && columnEdited === 7){
+      return moveToWarm(rowEdited)
+    }
+    
+    // Moving from Opportunity to Archive 
+    else if ((val === 'Closed' && columnEdited === 7) || ((val === 'Lost' || val === 'Abandoned') && columnEdited === 12)){
+      if (val === 'Closed'){
+        var closedDateExists = checkClosedDate(rowEdited)
+        if (!closedDateExists) {
+          return
+        }
+        else {
+          return archive(rowEdited)
+        }
+      }
+      else {
+        return archive(rowEdited)
+      }
+    }
+  }
+  
+  // Check for status change in Archive tab
+  else if (sheetName === 'Archive' && (columnEdited === 7 || columnEdited === 12)){
+    var cell = range.getA1Notation()
+    var val = ss.getRange(cell).getValue()
+    
+    // Moving from Archive by changing stage with Open status
+    if (columnEdited === 7 && ss.getRange("L"+rowEdited).getValue() === 'Open'){
+      if (val === 'Searching' || val === 'Touring' || val === 'Offering' || val === 'UC'){
+        ss.getRange(cell).setBackground(null)
+        return moveToOpp(rowEdited)
+      }
+      else if (val === 'Warm Lead' || val === 'New Lead'){
+        ss.getRange(cell).setBackground(null)
+        return moveToWarm(rowEdited)
+      }
+      else if (val === 'Cold Lead'){
+        ss.getRange(cell).setBackground(null)
+        return moveToCold(rowEdited)
+      }
+    }
+    
+    // Moving from Archive by changing status
+    else if (val === 'Open' && columnEdited === 12){
+      
+      var stageCell = "G"+rowEdited+""
+      var stage = ss.getRange(stageCell).getValue()
+      ss.getRange("L"+rowEdited+"").setBackground(null);
+      
+      // Moving from Archive to New/Warm Lead 
+      if (stage === 'New Lead' || stage === 'Warm Lead'){
+        return moveToWarm(rowEdited)
+      }
+      
+      // Moving from Archive to Cold Lead 
+      else if (stage === 'Cold Lead'){
+        return moveToCold(rowEdited)
+      }
+      
+      // Moving from Archive to Opportunity 
+      else if (stage === 'Searching' || stage === 'Touring' || stage === 'Offering' || stage === 'UC'){
+        return moveToOpp(rowEdited)
+      }
+    }
+  }
+
+  // Alert if dates are manually added to row.
+  else if (sheetName === 'Opportunities' && (columnEdited === 23 || columnEdited === 24 || columnEdited === 25) && rowEdited > 2){
+    alertUser('Use the form above to create/delete contract deadlines.')
+    ss.getRange('W' + rowEdited + '').setValue(ss.getRange('AC' + rowEdited + '').getValue())
+    ss.getRange('X' + rowEdited + '').setValue(ss.getRange('AD' + rowEdited + '').getValue())
+    return ss.getRange('Y' + rowEdited + '').setValue(ss.getRange('AE' + rowEdited + '').getValue())
+  }
+}
+
+function moveToOpp(rowEdited){
+  var ss = SpreadsheetApp.getActive();
+  ss.getSheetByName('Opportunities').insertRowsBefore(4,1)
+  var range = "A"+rowEdited+":"+rowEdited+""
+  ss.getRange(range).copyTo(ss.getSheetByName('Opportunities').getRange('A4:4'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  ss.deleteRows(rowEdited, 1)
+}
+
+function moveToWarm(rowEdited){
+  var ss = SpreadsheetApp.getActive();
+  ss.getSheetByName('New/Warm Leads').insertRowsBefore(4,1)
+  var range = "A"+rowEdited+":"+rowEdited+""
+  ss.getRange(range).copyTo(ss.getSheetByName('New/Warm Leads').getRange('A4:4'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  ss.deleteRows(rowEdited, 1)
+}
+
+function moveToCold(rowEdited){
+  var ss = SpreadsheetApp.getActive();
+  ss.getSheetByName('Cold Leads').insertRowsBefore(4,1)
+  var range = "A"+rowEdited+":"+rowEdited+""
+  ss.getRange(range).copyTo(ss.getSheetByName('Cold Leads').getRange('A4:4'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  ss.deleteRows(rowEdited, 1)
+}
+
+function archive(rowEdited){
+  var ss = SpreadsheetApp.getActive();
+  ss.getSheetByName('Archive').insertRowsBefore(4,1)
+  var range = "A"+rowEdited+":"+rowEdited+""
+  ss.getRange(range).copyTo(ss.getSheetByName('Archive').getRange('A4:4'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  ss.deleteRows(rowEdited, 1)
+}
+
+function updateCalendar(){
+  var ss = SpreadsheetApp.getActive()
+  var buyerName = ss.getRange('V2').getValue()
+  
+  // Capture new dates
+  var dueDiligenceDate = ss.getRange('W2').getValue()
+  var financingDate = ss.getRange('X2').getValue()
+  var settlementDate = ss.getRange('Y2').getValue()
+  
+  // Get row number of buyer being changed
+  var rowNum = ss.getRange('AA1').setFormula('=IFERROR(MATCH(V2,A:A,0),"")').getValue()
+  
+  var dueDiligenceOldDate
+  var financingOldDate
+  var settlementOldDate
+  
+  // Define OldDate variables if rowNum is valid
+  if (rowNum) {
+    // Capture old dates
+    dueDiligenceOldDate = ss.getRange('W' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
+    financingOldDate = ss.getRange('X' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
+    settlementOldDate = ss.getRange('Y' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  }
+  
+  // If no buyer is selected, throw an error
+  if (!buyerName){
+    makeBuyerRed()
+    return alertUser('Enter a buyer name.')
+  }
+  
+  // If no dates are selected, throw an error
+  else if (!dueDiligenceDate && !financingDate && !settlementDate){
+    makeDatesRed()
+    
+    if (dueDiligenceOldDate || financingOldDate || settlementOldDate){    
+      alertUser('Enter at least one new date to update your calendar.')
+      return resetOldDateFormats(rowNum)
+    } 
+    
+    else {
+      return alertUser(
+        'Enter all three dates to add them to your calendar. If a date is not applicable (e.g. F&A for a cash deal), enter "N/A" for the date.'
+      )
+    }
+  } 
+  
+  // If no previous dates, and not all dates are entered
+  else if ((!dueDiligenceDate || !financingDate || !settlementDate) && !dueDiligenceOldDate && !financingOldDate && !settlementOldDate){
+    makeDatesRed()
+    return alertUser(
+      'Enter all three dates to add them to your calendar. If a date is not applicable (e.g. F&A for a cash deal), enter "N/A" for the date.'
+    )
+  }
+  
+  // If buyer and at least 1 date entered, delete old events and create new ones
+  else {
+    
+    // Set format of old dates
+    ss.getRange('W' + rowNum + ':Y' + rowNum + '').setNumberFormat('m"/"d"/"yy')
+    
+    // Capture new dates and change format
+    dueDiligenceDate = ss.getRange('W2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+    financingDate = ss.getRange('X2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+    settlementDate = ss.getRange('Y2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+    ss.getRange('W2:Y2').setNumberFormat('m"/"d"/"yy')
+  
+    var email = ss.getSheetByName('Dashboard').getRange('B6').getValue()
+    deleteCreateEvents(email, dueDiligenceOldDate, financingOldDate, settlementOldDate)
+    
+    email = 'homie.com_1cs8eji9ahpmol4rvqllcq8bco@group.calendar.google.com'
+    deleteCreateEvents(email, dueDiligenceOldDate, financingOldDate, settlementOldDate)
+    
+    redoInputFormats()
+    return alertUser('Success! Events have been added to your calendar.')
+  }
+}
+
+function deleteCreateEvents(email, dueDiligenceOldDate, financingOldDate, settlementOldDate){
+  var calendar = CalendarApp.getCalendarById(email)
+  var ss = SpreadsheetApp.getActive()
+  var buyerName = ss.getRange('V2').getValue()
+  var dueDiligenceDate = ss.getRange('W2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  var financingDate = ss.getRange('X2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  var settlementDate = ss.getRange('Y2').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  ss.getRange('W2:Y2').setNumberFormat('m"/"d"/"yy')
+  var rowNum = ss.getRange('AA1').setFormula('=IFERROR(MATCH(V2,A:A,0),"")').getValue()
+  var eventName = ''
+  var newEvent = ''
+   
+  // If a new Due Diligence date is entered
+  if (dueDiligenceDate && dueDiligenceDate !== 'N/A'){ 
+    
+    // If previous due diligence date exists, find event and delete
+    if (dueDiligenceOldDate && dueDiligenceOldDate !== 'N/A'){
+      var dueDiligenceID = getIdFromName('' + buyerName + ' - Due Diligence Deadline', dueDiligenceOldDate, email)
+      
+      if (calendar.getEventById(dueDiligenceID)){
+        calendar.getEventById(dueDiligenceID).deleteEvent()
+      }
+    }
+    
+    // Create new event with new date
+    eventName = '' + buyerName + ' - Due Diligence Deadline'
+    newEvent = calendar.createAllDayEvent(eventName, new Date(dueDiligenceDate),{location: ''})
+    ss.getRange('W' + rowNum + '').setValue(dueDiligenceDate).setNumberFormat('m"/"d"/"yy')
+    ss.getRange('AC' + rowNum + '').setValue(dueDiligenceDate).setNumberFormat('m"/"d"/"yy')
+  }
+  
+  // Set Due Diligence date to N/A
+  else if (dueDiligenceDate === 'N/A'){
+    ss.getRange('W' + rowNum + '').setValue('N/A')
+    ss.getRange('AC' + rowNum + '').setValue('N/A')
+  }
+  
+  // If a new F&A date is entered
+  if (financingDate && financingDate !== 'N/A'){ 
+    
+    // If previous F&A exists, find event and delete
+    if (financingOldDate && financingOldDate !== 'N/A'){
+      var financingID = getIdFromName('' + buyerName + ' - F&A Deadline', financingOldDate, email)
+      if (calendar.getEventById(financingID)){
+        calendar.getEventById(financingID).deleteEvent()
+      }
+    }
+      
+    // Create new event with new date
+    eventName = '' + buyerName + ' - F&A Deadline'
+    newEvent = calendar.createAllDayEvent(eventName, new Date(financingDate),{location: ''})
+    ss.getRange('X' + rowNum + '').setValue(financingDate).setNumberFormat('m"/"d"/"yy')
+    ss.getRange('AD' + rowNum + '').setValue(financingDate).setNumberFormat('m"/"d"/"yy')
+  }
+  
+  // Set Due Diligence date to N/A
+  else if (financingDate === 'N/A'){
+    ss.getRange('X' + rowNum + '').setValue('N/A')
+    ss.getRange('AD' + rowNum + '').setValue('N/A')
+  }
+  
+  // If a new Settlement date is entered
+  if (settlementDate && settlementDate !== 'N/A'){ 
+    
+    // If previous Settlement exists, find event and delete
+    if (settlementOldDate & settlementOldDate !== 'N/A'){
+      var settlementID = getIdFromName('' + buyerName + ' - Settlement & Closing Deadline', settlementOldDate, email)
+      if (calendar.getEventById(settlementID)){
+        calendar.getEventById(settlementID).deleteEvent()
+      }
+    }
+    
+    // Create new event with new date
+    eventName = '' + buyerName + ' - Settlement & Closing Deadline'
+    newEvent = calendar.createAllDayEvent(eventName, new Date(settlementDate),{location: ''})
+    ss.getRange('Y' + rowNum + '').setValue(settlementDate).setNumberFormat('m"/"d"/"yy')
+    ss.getRange('AE' + rowNum + '').setValue(settlementDate).setNumberFormat('m"/"d"/"yy')
+  }
+  
+  // Set Due Diligence date to N/A
+  else if (settlementDate === 'N/A'){
+    ss.getRange('Y' + rowNum + '').setValue('N/A')
+    ss.getRange('AE' + rowNum + '').setValue('N/A')
+  }
+  
+  // Send out UC emails if there aren't any existing deadlines and it's not the 2nd time through this function
+  if (!dueDiligenceOldDate && !financingOldDate && !settlementOldDate && email !== 'homie.com_1cs8eji9ahpmol4rvqllcq8bco@group.calendar.google.com'){
+    sendUCEmails(email)
+  }
+}
+
+function getIdFromName(name, date, email){
+  var ss = SpreadsheetApp.getActive()
+  var calendar = CalendarApp.getCalendarById(email)
+  var events = calendar.getEventsForDay(new Date(date))
+  var title = ''
+  
+  for (var i = 0; i < events.length; i++){
+    title = events[i].getTitle()
+    if (title === name){
+      return events[i].getId()
+    }
+  }
+  return ''
+}
+
+function sendUCEmails(email){
+  MailApp.sendEmail({
+    to: email + "," + 'mdegroot09@gmail.com',
+    subject: "Under Contract Next Steps", 
+    htmlBody: 
+    "You're under contract!<br><br>" +
+    "Thanks,<br>" +
+    "<img src='https://simplejoys.s3.us-east-2.amazonaws.com/email%20signature-1576377050955.png'>"
+  })
+}
+
+function redoInputFormats() {
+  var ss = SpreadsheetApp.getActive()
+  ss.getRange('V2:Y2')
+  .clear({contentsOnly: true})
+  .setBackground('#7fa0af')
+  .setFontColor('#ffffff')
+  .setHorizontalAlignment('center')
+  .setVerticalAlignment('middle')
+  .setFontFamily('Verdana')
+  .setFontSize(10)
+  .setNumberFormat('m"/"d"/"yy')
+  ss.getRange('X1:X2').setBorder(true, true, true, true, null, null, '#999999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  ss.getRange('W1:W2').setBorder(true, true, true, true, null, null, '#999999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  ss.getRange('V1:V2').setBorder(true, true, true, true, null, null, '#999999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+  ss.getRange('V1:Y2').setBorder(true, true, true, true, null, null, '#ffffff', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
+}
+
+function makeBuyerRed() {
+  var ss = SpreadsheetApp.getActive();
+  return ss.getRange('V2').setBackground('#f4cccc').setFontColor('#303f46');
+}
+
+function makeDatesRed() {
+  var ss = SpreadsheetApp.getActive();
+  var dueDiligenceDate = ss.getRange('W2').getValue()
+  var financingDate = ss.getRange('X2').getValue()
+  var settlementDate = ss.getRange('Y2').getValue()
+  
+  if (!dueDiligenceDate){
+    ss.getRange('W2').setBackground('#f4cccc').setFontColor('#303f46')
+  }
+    
+  if (!financingDate){
+    ss.getRange('X2').setBackground('#f4cccc').setFontColor('#303f46')
+  }
+    
+  if (!settlementDate){
+    ss.getRange('Y2').setBackground('#f4cccc').setFontColor('#303f46')
+  }
+}
+
+function alertUser(text){
   var ui = SpreadsheetApp.getUi()
-  
-  // only run with zip code or filters is changed
-  if (columnOfCellEdited === 5 && (rowOfCellEdited === 4 || rowOfCellEdited === 5 || rowOfCellEdited === 6)) { 
-    if (rowOfCellEdited === 4 && spreadsheet.getRange('E4').getValue()){
-      
-      // if city name is changed
-      agentCellTurnGray()
-      
-      // change zip code to match entered city
-      zip = lookupZip()
-      spreadsheet.getRange('E5').setValue(zip)
-      
-      // if City name is changed AND selected
-      redoFormulas(zip)
-      redoFilter()
-      copyNames()
-      
-      agentCellTurnOrange()
-      
-    } else if (rowOfCellEdited === 5 && spreadsheet.getRange('E5').getValue()){
-      
-      // if zip code is changed
-      agentCellTurnGray()
-      
-      // change city name to match entered zip code
-      var city = lookupCity()
-      spreadsheet.getRange('E4').setValue(city)
-      
-      // if Zip Code is changed AND selected
-      redoFormulas(zip)
-      redoFilter()
-      copyNames()
-      
-      agentCellTurnOrange()
-      
-    } else if (rowOfCellEdited === 6){
-      
-      // if Mile Radius is changed
-      agentCellTurnGray()
-      // redoFormulas(zip)
-      // redoFilter()
-      
-      // Get Radius in E6
-      var val = spreadsheet.getRange('E6').getValue()
-      
-      var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
-      spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
-      
-      // Sort Last Lead Received from oldest to youngest
-      spreadsheet.getActiveSheet().getFilter().sort(8, true);
-      
-      // Sort 7-Day Total from least to most
-      spreadsheet.getActiveSheet().getFilter().sort(9, true)
-      
-      copyNames()
-      
-      agentCellTurnOrange()
-      
-    }
-    //  } else if (columnOfCellEdited === 6 && rowOfCellEdited === 11){
-    
-    //    // Check if buyer name is filled out
-    //    if (spreadsheet.getRange('F11').getValue() === 'Assign' && (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()))){
-    //      spreadsheet.getRange('F11').setValue('')
-    //      if (!spreadsheet.getRange('I5').getValue()) {
-    //        errorBox('I5')
-    //      }
-    //      if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
-    //        errorBox('I6')
-    //        errorBox('I7')
-    //      }
-    //    //      ui.alert('Please fill out the buyer info.') 
-    //    } 
-    //    else {
-    //      // When F11 is changed to 'ASSIGN', change
-    //      if(spreadsheet.getRange('F11').getValue() === 'Assign' && !spreadsheet.getRange('E8').isBlank()){
-    //        updateAgentTimeStamp()
-    //        spreadsheet.getRange('F11').setValue('')
-    //      }
-    //    } 
+  ui.alert(text)
+}
+
+function resetOldDateFormats(rowNum){
+  var ss = SpreadsheetApp.getActive()
+  ss.getRange('W' + rowNum + '').setNumberFormat('m"/"d"/"yy').getValue()
+  ss.getRange('X' + rowNum + '').setNumberFormat('m"/"d"/"yy').getValue()
+  ss.getRange('Y' + rowNum + '').setNumberFormat('m"/"d"/"yy').getValue()
+}
+
+function checkClosedDate(rowEdited){
+  var ss = SpreadsheetApp.getActive()
+  var closedDate = ss.getRange('Z' + rowEdited).getValue()
+  if (!closedDate){
+    var ui = SpreadsheetApp.getUi();
+    ui.alert('Enter a closed date into cell: Z' + rowEdited);
+    return false
+  }
+  else {
+    return true
   }
 }
 
-function redoFormulas(zip){
-  var spreadsheet = SpreadsheetApp.getActive();
+function deleteEvents(){
+  var ss = SpreadsheetApp.getActive()
+  var buyerName = ss.getRange('V2').getValue()
   
-  // clear radius filter if active
-  if (spreadsheet.getActiveSheet().getFilter().getColumnFilterCriteria(7)){
-    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  // If no buyer is selected, throw an error
+  if (!buyerName){
+    makeBuyerRed()
+    return alertUser('Enter a buyer name.')
   }
   
-  // clear dropdown
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
-  agentCellTurnGray()
+  // Get row number of buyer being changed
+  var rowNum = ss.getRange('AA1').setFormula('=IFERROR(MATCH(V2,A:A,0),"")').getValue()
+  ss.getRange('W' + rowNum + ':Y' + rowNum + '').setNumberFormat('m"/"d"/"yy')
   
-  // add two calls for each agent
-  spreadsheet.getRange('Y14').setValue("=zipIt(F14,E5)")
-  spreadsheet.getRange('Y15').setValue("=zipIt(F15,E5)")
-  spreadsheet.getRange('Y16').setValue("=zipIt(F16,E5)")
-  spreadsheet.getRange('Y17').setValue("=zipIt(F17,E5)")
-  spreadsheet.getRange('Y18').setValue("=zipIt(F18,E5)")
-  spreadsheet.getRange('Y19').setValue("=zipIt(F19,E5)")
-  spreadsheet.getRange('Y20').setValue("=zipIt(F20,E5)")
-  spreadsheet.getRange('Y21').setValue("=zipIt(F21,E5)")
-  spreadsheet.getRange('Y22').setValue("=zipIt(F22,E5)")
-  spreadsheet.getRange('Y23').setValue("=zipIt(F23,E5)")
-  spreadsheet.getRange('Y24').setValue("=zipIt(F24,E5)")
+  // Capture old dates
+  var dueDiligenceOldDate = ss.getRange('W' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  var financingOldDate = ss.getRange('X' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
+  var settlementOldDate = ss.getRange('Y' + rowNum + '').setNumberFormat('mmmm" "d", "yyyy').getValue()
   
-  spreadsheet.getRange('Z14').setValue("=zipIt(E5,F14)")
-  spreadsheet.getRange('Z15').setValue("=zipIt(E5,F15)")
-  spreadsheet.getRange('Z16').setValue("=zipIt(E5,F16)")
-  spreadsheet.getRange('Z17').setValue("=zipIt(E5,F17)")
-  spreadsheet.getRange('Z18').setValue("=zipIt(E5,F18)")
-  spreadsheet.getRange('Z19').setValue("=zipIt(E5,F19)")
-  spreadsheet.getRange('Z20').setValue("=zipIt(E5,F20)")
-  spreadsheet.getRange('Z21').setValue("=zipIt(E5,F21)")
-  spreadsheet.getRange('Z22').setValue("=zipIt(E5,F22)")
-  spreadsheet.getRange('Z23').setValue("=zipIt(E5,F23)")
-  spreadsheet.getRange('Z24').setValue("=zipIt(E5,F24)")
-  
-  // select distance result that isn't an error
-  if (spreadsheet.getRange('Y14').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G14').setValue(spreadsheet.getRange('Y14').getValue())
-  } else {
-    spreadsheet.getRange('G14').setValue(spreadsheet.getRange('Z14').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y15').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G15').setValue(spreadsheet.getRange('Y15').getValue())
-  } else {
-    spreadsheet.getRange('G15').setValue(spreadsheet.getRange('Z15').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y16').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G16').setValue(spreadsheet.getRange('Y16').getValue())
-  } else {
-    spreadsheet.getRange('G16').setValue(spreadsheet.getRange('Z16').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y17').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G17').setValue(spreadsheet.getRange('Y17').getValue())
-  } else {
-    spreadsheet.getRange('G17').setValue(spreadsheet.getRange('Z17').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y18').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G18').setValue(spreadsheet.getRange('Y18').getValue())
-  } else {
-    spreadsheet.getRange('G18').setValue(spreadsheet.getRange('Z18').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y19').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G19').setValue(spreadsheet.getRange('Y19').getValue())
-  } else {
-    spreadsheet.getRange('G19').setValue(spreadsheet.getRange('Z19').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y20').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Y20').getValue())
-  } else {
-    spreadsheet.getRange('G20').setValue(spreadsheet.getRange('Z20').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y21').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Y21').getValue())
-  } else {
-    spreadsheet.getRange('G21').setValue(spreadsheet.getRange('Z21').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y22').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Y22').getValue())
-  } else {
-    spreadsheet.getRange('G22').setValue(spreadsheet.getRange('Z22').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y23').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Y23').getValue())
-  } else {
-    spreadsheet.getRange('G23').setValue(spreadsheet.getRange('Z23').getValue())
-  }
-  
-  if (spreadsheet.getRange('Y24').getValue() !== "#ERROR!"){
-    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Y24').getValue())
-  } else {
-    spreadsheet.getRange('G24').setValue(spreadsheet.getRange('Z24').getValue())
-  }
-}
-
-function redoFilter() {
-  clearFilters()
-  
-  // Recreate filter
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D13:I24').createFilter();
-  
-  // Get Radius in E6
-  var val = spreadsheet.getRange('E6').getValue()
-  
-  var criteria = SpreadsheetApp.newFilterCriteria().whenNumberLessThanOrEqualTo(val).build();
-  spreadsheet.getActiveSheet().getFilter().setColumnFilterCriteria(7, criteria);
-  
-  // Sort Last Lead Received from oldest to youngest
-  spreadsheet.getActiveSheet().getFilter().sort(8, true);
-  
-  // Sort 7-Day Total from least to most
-  spreadsheet.getActiveSheet().getFilter().sort(9, true);
-};
-
-function clearFilters() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getActiveSheet().getFilter().remove();
-  
-  // clear column h cells
-  spreadsheet.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
-  
-  // clear dropdown
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
-  agentCellTurnGray()
-};
-
-function copyNames(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D13:D33').copyTo(spreadsheet.getRange('L1'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
-  spreadsheet.getRange('L2').copyTo(spreadsheet.getRange('E8'), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
-  agentCellTurnOrange()
-  return;
-}
-
-function updateAgentTimeStamp(){
-  
-  var spreadsheet = SpreadsheetApp.getActive()
-  
-  // Check if buyer info is filled out
-  if (!spreadsheet.getRange('I5').getValue() || (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue())){
-    if (!spreadsheet.getRange('I5').getValue()) {
-      errorBox('I5')
-    }
-    if (!spreadsheet.getRange('I6').getValue() && !spreadsheet.getRange('I7').getValue()) {
-      errorBox('I6')
-      errorBox('I7')
-    }
-    //      ui.alert('Please fill out the buyer info.') 
-  } else if(spreadsheet.getRange('E8').isBlank()){
+  // Delete events from agent's calendar
+  var email = ss.getSheetByName('Dashboard').getRange('B6').getValue()
+  var calendar = CalendarApp.getCalendarById(email)
     
-    errorBox('E8:F9') 
+  // If previous due diligence date exists, find event and delete
+  if (dueDiligenceOldDate && dueDiligenceOldDate !== 'N/A'){
+    var dueDiligenceID = getIdFromName('' + buyerName + ' - Due Diligence Deadline', dueDiligenceOldDate, email)
     
-  } else {
-    
-    buyerInfoTurnGray()
-    agentCellTurnGray()
-    
-    if (spreadsheet.getRange('I8').getValue()){
-      updateMaster()
-    }
-    
-    var spreadsheet = SpreadsheetApp.openById('1Cqy5-CySvFJtWtkkli8UNGnjSSOX9DeZz_5FKpkmXlM')
-    var queue = spreadsheet.getSheetByName('Queue')
-    
-    var buyerAgent = queue.getRange('E8').getValue()
-    var buyerName = queue.getRange('I5').getValue()
-    var buyerPhone = queue.getRange('I6').getValue()
-    var buyerEmail = queue.getRange('I7').getValue()
-    var listingAgent = queue.getRange('I8').getValue()
-    var source = queue.getRange('I9').getValue()
-    var tags = queue.getRange('I10').getValue()
-    var notes = queue.getRange('I11').getValue()
-    var zip = queue.getRange('E5').getValue()
-    
-    var buyerAgentSheet = spreadsheet.getSheetByName(buyerAgent)
-    
-    if (buyerAgentSheet) {    
-      spreadsheet.getSheetByName(buyerAgent).insertRowsBefore(9,1)
-      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setValue(new Date());
-      spreadsheet.getSheetByName(buyerAgent).getRange('A9').setNumberFormat('m"/"d" "h":"mma/p');
-      spreadsheet.getSheetByName(buyerAgent).getRange('B9').setValue(buyerName)
-      spreadsheet.getSheetByName(buyerAgent).getRange('C9').setValue(buyerPhone)
-      spreadsheet.getSheetByName(buyerAgent).getRange('D9').setValue(buyerEmail)
-    }
-    
-    // clear Buyer Info inputs and redo formatting
-    agentCellTurnOrange();
-    spreadsheet.getRange('I5:I11').clear({contentsOnly: true})
-    buyerInfoTurnOrange()
-    
-    // clear city, zip, and miles distances for each agent
-    spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
-    spreadsheet.getRange('E6').setValue(20)
-    spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
-    
-    // clear the miles radius filter
-    spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
-    
-    // Sort Last Lead Received from oldest to youngest
-    spreadsheet.getActiveSheet().getFilter().sort(8, true);
-    
-    // Sort 7-Day Total from least to most
-    spreadsheet.getActiveSheet().getFilter().sort(9, true);
-    
-    // redoFormulas(zip)
-    
-    copyNames()
-    agentCellTurnOrange()
-  }
-}
-
-
-function updateMaster(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  var buyerAgent = spreadsheet.getRange('E8').getValue()
-  var buyerName = spreadsheet.getRange('I5').getValue()
-  var buyerPhone = spreadsheet.getRange('I6').getValue()
-  var buyerEmail = spreadsheet.getRange('I7').getValue()
-  var listingAgent = spreadsheet.getRange('I8').getValue()
-  var source = spreadsheet.getRange('I9').getValue()
-  var tags = spreadsheet.getRange('I10').getValue()
-  var notes = spreadsheet.getRange('I11').getValue()
-  var zip = spreadsheet.getRange('E5').getValue()
-  
-  var master = SpreadsheetApp.openById('1jHTJbt4FM4WGbHSy0nGF8OEpArik44Qmj0Ba7GfMOnE')
-  var referrals = master.getSheetByName('Referrals')
-  
-  referrals.insertRowsBefore(referrals.getRange('4:4').getRow(), 1);  
-  referrals.getRange('A4').setValue(buyerName)
-  referrals.getRange('B4').setValue(listingAgent)
-  referrals.getRange('C4').setValue('Lead')
-  referrals.getRange('D4').setValue(600)
-  referrals.getRange('E4').setValue(source)
-  referrals.getRange('G4').setValue(buyerAgent)
-  referrals.getRange('H4').setValue('Open')
-  referrals.getRange('K4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
-  referrals.getRange('L4').setValue(tags)
-  referrals.getRange('M4').setValue(notes)
-  referrals.getRange('N4').setFormula('=IF(F4="","",IFS(F4="TBD","TBD",MONTH(F4)=1,"January",MONTH(F4)=2,"February",MONTH(F4)=3,"March",MONTH(F4)=4,"April",MONTH(F4)=5,"May",MONTH(F4)=6,"June",MONTH(F4)=7,"July",MONTH(F4)=8,"August",MONTH(F4)=9,"September",MONTH(F4)=10,"October",MONTH(F4)=11,"November",MONTH(F4)=12,"December"))');
-  referrals.getRange('O4').setFormula('=IF(F4="","",IF(F4="TBD","TBD",year(F4)))');
-  referrals.getRange('P4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-  referrals.getRange('Q4').setValue('=TODAY()')
-  referrals.getRange('Q4').setNumberFormat('m"/"d"/"yy')
-  var date = referrals.getRange('Q4').getValue()
-  referrals.getRange('Q4').setValue(date)
-}
-
-function toggleCheckboxes(rowOfCellEdited){
-  var spreadsheet = SpreadsheetApp.getActive();
-  if (rowOfCellEdited === 4){
-    if (spreadsheet.getRange('C4').isChecked()){
-      lightenZip()
-      spreadsheet.getRange('C5').setValue(false)
-    } else {
-      lightenCity()
-      spreadsheet.getRange('C5').setValue(true)
-    }
-  } else {
-    if (spreadsheet.getRange('C5').isChecked()){
-      lightenCity()
-      spreadsheet.getRange('C4').setValue(false)
-    } else {
-      lightenZip()
-      spreadsheet.getRange('C4').setValue(true)
+    if (calendar.getEventById(dueDiligenceID)){
+      calendar.getEventById(dueDiligenceID).deleteEvent()
     }
   }
-} 
-
-function lookupCity() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  if (spreadsheet.getRange('E5').getValue()){
-    spreadsheet.getRange('E4').setFormula('=VLOOKUP(E5,\'Utah Zip Codes\'!B2:D391,3,false)');
-    return spreadsheet.getRange('E4').getValue()
-  } else {
-    return ''
+    
+  // If previous F&A exists, find event and delete
+  if (financingOldDate && financingOldDate !== 'N/A'){
+    var financingID = getIdFromName('' + buyerName + ' - F&A Deadline', financingOldDate, email)
+    if (calendar.getEventById(financingID)){
+      calendar.getEventById(financingID).deleteEvent()
+    }
   }
-}
-
-function lookupZip(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  if (spreadsheet.getRange('E4').getValue()){
-    spreadsheet.getRange('E5').setFormula('=VLOOKUP(E4,\'Utah Zip Codes\'!A2:B391,2,false)'); 
-    return spreadsheet.getRange('E5').getValue()
-  } else {
-    return ''
+    
+  // If previous Settlement exists, find event and delete
+  if (settlementOldDate && settlementOldDate !== 'N/A'){
+    var settlementID = getIdFromName('' + buyerName + ' - Settlement & Closing Deadline', settlementOldDate, email)
+    if (calendar.getEventById(settlementID)){
+      calendar.getEventById(settlementID).deleteEvent()
+    }
   }
-}
-
-function lightenCity() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D4:E4').setFontColor('#cccccc')
-  spreadsheet.getRange('E4').setBackground('#fefefe')
-  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('D5:E5').setFontColor('#3e494c')
-  spreadsheet.getRange('E5').setBackground('#fff2cc')
-  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-}
-
-function lightenZip() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('D5:E5').setFontColor('#cccccc')
-  spreadsheet.getRange('E5').setBackground('#fefefe')
-  spreadsheet.getRange('E5').setBorder(true, true, true, true, null, null, '#f5f5f5', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  spreadsheet.getRange('D4:E4').setFontColor('#3e494c')
-  spreadsheet.getRange('E4').setBackground('#fff2cc')
-  spreadsheet.getRange('E4').setBorder(true, true, true, true, null, null, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-}
-
-function errorBox(cell) {
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange(cell).setBackground('#f4cccc')
-  .setBorder(true, true, true, true, null, null, '#ea9999', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H4:I4').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-}
-
-function agentCellTurnGray(){
-  var spreadsheet = SpreadsheetApp.getActive()
-  spreadsheet.getRange('E4:E6').setBackground('#f3f3f3')
-  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
   
-  spreadsheet.getRange('E8:F9').setBackground('#f3f3f3')
-  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-}
+  // Delete events from shared group calendar
+  email = 'homie.com_1cs8eji9ahpmol4rvqllcq8bco@group.calendar.google.com'
+  calendar = CalendarApp.getCalendarById(email)
+    
+  // If previous due diligence date exists, find event and delete
+  if (dueDiligenceOldDate && dueDiligenceOldDate !== 'N/A'){
+    var dueDiligenceID = getIdFromName('' + buyerName + ' - Due Diligence Deadline', dueDiligenceOldDate, email)
+    
+    if (calendar.getEventById(dueDiligenceID)){
+      calendar.getEventById(dueDiligenceID).deleteEvent()
+    }
+  }
 
-function agentCellTurnOrange(){
-  var spreadsheet = SpreadsheetApp.getActive()
+  // If previous F&A exists, find event and delete
+  if (financingOldDate && financingOldDate !== 'N/A'){
+    var financingID = getIdFromName('' + buyerName + ' - F&A Deadline', financingOldDate, email)
+    if (calendar.getEventById(financingID)){
+      calendar.getEventById(financingID).deleteEvent()
+    }
+  }
+    
+  // If previous Settlement exists, find event and delete
+  if (settlementOldDate && settlementOldDate !== 'N/A'){
+    var settlementID = getIdFromName('' + buyerName + ' - Settlement & Closing Deadline', settlementOldDate, email)
+    if (calendar.getEventById(settlementID)){
+      calendar.getEventById(settlementID).deleteEvent()
+    }
+  }
   
-  spreadsheet.getRange('E4:E6').setBackground('#fff2cc')
-  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  .setHorizontalAlignment('center')
-  .setVerticalAlignment('middle')
-  .setFontSize(13)
-  .setFontFamily('Arial')
+  // Clear previous dates from buyer row
+  ss.getRange('W' + rowNum + ':Y' + rowNum + '').clear({contentsOnly: true})
+  ss.getRange('AC' + rowNum + ':AE' + rowNum + '').clear({contentsOnly: true})
   
-  spreadsheet.getRange('E8:F9').setBackground('#fff2cc')
-  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  .setHorizontalAlignment('center')
-  .setVerticalAlignment('middle')
-  .setFontSize(17)
-  .setFontFamily('Arial')
-}
-
-function buyerInfoTurnGray(){
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('I5:I11').setBackground('#f3f3f3')
-  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  .setBorder(true, true, true, true, true, true, '#d9d9d9', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-}
-
-function buyerInfoTurnOrange(){
-  var spreadsheet = SpreadsheetApp.getActive();  
-  spreadsheet.getRange('I5:I11').setBackground('#fff2cc')
-  .setBorder(true, true, true, true, true, true, '#ffe599', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
-  .setHorizontalAlignment('left')
-  .setVerticalAlignment('middle')
-  .setFontSize(11)
-  .setFontFamily('Arial');
-  spreadsheet.getRange('H5:I11').setBorder(true, true, true, true, null, null, '#58dbc2', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
-}
-
-function clearParameters() {
-  agentCellTurnGray()
-  var spreadsheet = SpreadsheetApp.getActive();
-  spreadsheet.getRange('E4:E5').clear({contentsOnly: true})
-  spreadsheet.getRange('E6').setValue(20)
-  spreadsheet.getRange('E8').clear({contentsOnly: true})
-  spreadsheet.getRange('G14:G24').clear({contentsOnly: true})
-  spreadsheet.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
-  agentCellTurnOrange()
+  // Reset the formatting for the date inputs 
+  redoInputFormats()
+  
+  // Success alert
+  alertUser('Events were successfully deleted from your calendar.')
 }
