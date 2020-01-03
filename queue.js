@@ -325,15 +325,15 @@ function assignAgent(){
     
     ss.getSheetByName('Raw Data').insertRowsBefore(ss.getSheetByName('Raw Data').getRange('4:4').getRow(), 1);  
     ss.getSheetByName('Raw Data').getRange('A4').setValue(buyerName)
-    //  hotWarmLeads.getRange('B4').setValue()
-    //  hotWarmLeads.getRange('C4').setValue()
+    //  ss.getSheetByName.getRange('B4').setValue()
+    //  ss.getSheetByName.getRange('C4').setValue()
     ss.getSheetByName('Raw Data').getRange('D4').setValue(buyerPhone)
     ss.getSheetByName('Raw Data').getRange('E4').setValue(buyerEmail)
     ss.getSheetByName('Raw Data').getRange('F4').setValue(listingAgent)
     ss.getSheetByName('Raw Data').getRange('G4').setValue('New Lead')
-    //    hotWarmLeads.getRange('H4').setValue(600)
+    //    ss.getSheetByName.getRange('H4').setValue(600)
     ss.getSheetByName('Raw Data').getRange('I4').setValue(source)
-    //  hotWarmLeads.getRange('J4').setValue()
+    //  ss.getSheetByName.getRange('J4').setValue()
     ss.getSheetByName('Raw Data').getRange('K4').setValue(buyerAgent)
     ss.getSheetByName('Raw Data').getRange('L4').setValue('Open')
     ss.getSheetByName('Raw Data').getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
@@ -341,7 +341,7 @@ function assignAgent(){
     ss.getSheetByName('Raw Data').getRange('Q4').setFormula('=IF(J4="","",IFS(J4="TBD","TBD",MONTH(J4)=1,"January",MONTH(J4)=2,"February",MONTH(J4)=3,"March",MONTH(J4)=4,"April",MONTH(J4)=5,"May",MONTH(J4)=6,"June",MONTH(J4)=7,"July",MONTH(J4)=8,"August",MONTH(J4)=9,"September",MONTH(J4)=10,"October",MONTH(J4)=11,"November",MONTH(J4)=12,"December"))');
     ss.getSheetByName('Raw Data').getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
     ss.getSheetByName('Raw Data').getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-    ss.getSheetByName('Raw Data').getRange('AA4').setValue('=TODAY()')
+    ss.getSheetByName('Raw Data').getRange('AA4').setValue('=NOW()')
     ss.getSheetByName('Raw Data').getRange('AA4').setNumberFormat('m"/"d" "h":"mma/p')
     var date = ss.getSheetByName('Raw Data').getRange('AA4').getValue()
     ss.getSheetByName('Raw Data').getRange('AA4').setValue(date)
@@ -386,77 +386,78 @@ function updateAgentSS(){
   var zip = ss.getRange('E5').getValue()
   
   // Get the sheet URL specific to the Buyer Agent assigned
-  var agentSS = getAgentSheet(buyerAgent)
+  var id = getAgentSheet(buyerAgent)
   
   // If the buyer agent has a sheet, get the New/Warm Leads tab
-  if (agentSS){
-    var hotWarmLeads = agentSS.getSheetByName('New/Warm Leads')
+  if (id){
+    var agentSS = SpreadsheetApp.openById(id)
+    var newWarmLeads = agentSS.getSheetByName('New/Warm Leads')
     
-    hotWarmLeads.insertRowsBefore(hotWarmLeads.getRange('4:4').getRow(), 1);  
-    hotWarmLeads.getRange('A4').setValue(buyerName)
-    //  hotWarmLeads.getRange('B4').setValue()
-    //  hotWarmLeads.getRange('C4').setValue()
-    hotWarmLeads.getRange('D4').setValue(buyerPhone)
-    hotWarmLeads.getRange('E4').setValue(buyerEmail)
-    hotWarmLeads.getRange('F4').setValue(listingAgent)
-    hotWarmLeads.getRange('G4').setValue('New Lead')
-    //    hotWarmLeads.getRange('H4').setValue(600)
-    hotWarmLeads.getRange('I4').setValue(source)
-    //  hotWarmLeads.getRange('J4').setValue()
-    hotWarmLeads.getRange('K4').setValue(buyerAgent)
-    hotWarmLeads.getRange('L4').setValue('Open')
-    hotWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
-    hotWarmLeads.getRange('P4').setValue(tags)
-    hotWarmLeads.getRange('Q4').setFormula('=IF(J4="","",IFS(J4="TBD","TBD",MONTH(J4)=1,"January",MONTH(J4)=2,"February",MONTH(J4)=3,"March",MONTH(J4)=4,"April",MONTH(J4)=5,"May",MONTH(J4)=6,"June",MONTH(J4)=7,"July",MONTH(J4)=8,"August",MONTH(J4)=9,"September",MONTH(J4)=10,"October",MONTH(J4)=11,"November",MONTH(J4)=12,"December"))');
-    hotWarmLeads.getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
-    hotWarmLeads.getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
-    hotWarmLeads.getRange('AA4').setValue('=TODAY()')
-    hotWarmLeads.getRange('AA4').setNumberFormat('m"/"d" "h":"mma/p')
-    var date = hotWarmLeads.getRange('AA4').getValue()
-    hotWarmLeads.getRange('AA4').setValue(date)
-    hotWarmLeads.getRange('AB4').setValue(notes)
+    newWarmLeads.insertRowsBefore(newWarmLeads.getRange('4:4').getRow(), 1);  
+    newWarmLeads.getRange('A4').setValue(buyerName)
+    //  newWarmLeads.getRange('B4').setValue()
+    //  newWarmLeads.getRange('C4').setValue()
+    newWarmLeads.getRange('D4').setValue(buyerPhone)
+    newWarmLeads.getRange('E4').setValue(buyerEmail)
+    newWarmLeads.getRange('F4').setValue(listingAgent)
+    newWarmLeads.getRange('G4').setValue('New Lead')
+    //    newWarmLeads.getRange('H4').setValue(600)
+    newWarmLeads.getRange('I4').setValue(source)
+    //  newWarmLeads.getRange('J4').setValue()
+    newWarmLeads.getRange('K4').setValue(buyerAgent)
+    newWarmLeads.getRange('L4').setValue('Open')
+    newWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+    newWarmLeads.getRange('P4').setValue(tags)
+    newWarmLeads.getRange('Q4').setFormula('=IF(J4="","",IFS(J4="TBD","TBD",MONTH(J4)=1,"January",MONTH(J4)=2,"February",MONTH(J4)=3,"March",MONTH(J4)=4,"April",MONTH(J4)=5,"May",MONTH(J4)=6,"June",MONTH(J4)=7,"July",MONTH(J4)=8,"August",MONTH(J4)=9,"September",MONTH(J4)=10,"October",MONTH(J4)=11,"November",MONTH(J4)=12,"December"))');
+    newWarmLeads.getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
+    newWarmLeads.getRange('S4').setFormula('=IFS(N4="TBD","TBD",N4="","",N4>0,O4&" "&N4)');
+    newWarmLeads.getRange('AA4').setValue('=NOW()')
+    newWarmLeads.getRange('AA4').setNumberFormat('m"/"d" "h":"mma/p')
+    var date = newWarmLeads.getRange('AA4').getValue()
+    newWarmLeads.getRange('AA4').setValue(date)
+    newWarmLeads.getRange('AB4').setValue(notes)
   }
 }
 
 function getAgentSheet(buyerAgent){
   if (buyerAgent === 'Allison Timothy'){
-    return 'https://docs.google.com/spreadsheets/d/1HtynDRCk0GyavYUM0enaTnz0weOYC7nwMfbJKfqjLRo/edit'
+    return '1HtynDRCk0GyavYUM0enaTnz0weOYC7nwMfbJKfqjLRo'
   }
   else if (buyerAgent === 'Ben Ellis'){
-    return 'https://docs.google.com/spreadsheets/d/1RUOVZfM-434oK64nLQTCBwaNTEmAPByRrWUzp5Fjw-I/edit'
+    return '1RUOVZfM-434oK64nLQTCBwaNTEmAPByRrWUzp5Fjw-I'
   }
   else if (buyerAgent === 'David Greenwood'){
-    return 'https://docs.google.com/spreadsheets/d/1XkcKnG-HVjA2M1Rq1rEJnRWIwpoMO06wbzFvJT45SFE/edit'
+    return '1XkcKnG-HVjA2M1Rq1rEJnRWIwpoMO06wbzFvJT45SFE'
   }
   else if (buyerAgent === 'Eric Nelson'){
-    return 'https://docs.google.com/spreadsheets/d/1SQU6zAsGGvbWaeX1C1AYdHhh37HZB9ADA1aSo075pCw/edit'
+    return '1SQU6zAsGGvbWaeX1C1AYdHhh37HZB9ADA1aSo075pCw'
   }
   else if (buyerAgent === 'Jake Richins'){
-    return 'https://docs.google.com/spreadsheets/d/1m46W2QJNyehTyd8sm_yLX2aCXd1NzkIk3AVtcZrNESY/edit'
+    return '1m46W2QJNyehTyd8sm_yLX2aCXd1NzkIk3AVtcZrNESY'
   }
   else if (buyerAgent === 'Jamie Johnson'){
-    return 'https://docs.google.com/spreadsheets/d/1pie4IfWLlLLxZzR4EMXQpbf58LcBEiUIJTnNQ8YceX0/edit'
+    return '1pie4IfWLlLLxZzR4EMXQpbf58LcBEiUIJTnNQ8YceX0'
   }
   else if (buyerAgent === 'Jeremy Doggett'){
-    return 'https://docs.google.com/spreadsheets/d/1e3ex5sBlKqA4BtQqqKuL6_A0KtHRTVpB0Exf85iHfTg/edit'
+    return '1e3ex5sBlKqA4BtQqqKuL6_A0KtHRTVpB0Exf85iHfTg'
   }
   else if (buyerAgent === 'JoAnn Ortega-Petty'){
-    return 'https://docs.google.com/spreadsheets/d/1X2Sns8dJr01Lv0eBb7RLYBr0L4gTS_p6DDof66LAQ4U/edit'
+    return '1X2Sns8dJr01Lv0eBb7RLYBr0L4gTS_p6DDof66LAQ4U'
   }
   else if (buyerAgent === 'Juan Gomez'){
-    return 'https://docs.google.com/spreadsheets/d/10DjiST0kxblpoCkyRWJAcYwCnwyBJUqqW3QNTmNwGaM/edit'
+    return '10DjiST0kxblpoCkyRWJAcYwCnwyBJUqqW3QNTmNwGaM'
   }
   else if (buyerAgent === 'Kodi Paulson'){
-    return 'https://docs.google.com/spreadsheets/d/1cRU8l4_miy0kski3XMxSQ8t6ZMzcdxtyVwpImY_qt1U/edit'
+    return '1cRU8l4_miy0kski3XMxSQ8t6ZMzcdxtyVwpImY_qt1U'
   }
   else if (buyerAgent === 'Mike Pembroke'){
-    return 'https://docs.google.com/spreadsheets/d/1TIf55QXFo1QO73_qIKS7pGAPcQG49xNy0i0fNdxryXI/edit'
+    return '1TIf55QXFo1QO73_qIKS7pGAPcQG49xNy0i0fNdxryXI'
   }
   else if (buyerAgent === 'Taryn Nielsen'){
-    return 'https://docs.google.com/spreadsheets/d/1tTjhvHG2Ut-eMlK8s0c_Q4wBotoZ9BDOOnTr5DOqUZg/edit'
+    return '1tTjhvHG2Ut-eMlK8s0c_Q4wBotoZ9BDOOnTr5DOqUZg'
   }
   else if (buyerAgent === 'Wyatt Koeven'){
-    return 'https://docs.google.com/spreadsheets/d/1_cCisCkYlmX5FL9cHdI_k6RVBjQ12_qPhOjAUDMWo_0/edit'
+    return '1_cCisCkYlmX5FL9cHdI_k6RVBjQ12_qPhOjAUDMWo_0'
   }
   else return
 }
