@@ -343,9 +343,11 @@ function assignAgent(){
     ss.getSheetByName('Raw Data').getRange('E4').setValue(buyerEmail)
     ss.getSheetByName('Raw Data').getRange('F4').setValue(listingAgent)
     ss.getSheetByName('Raw Data').getRange('G4').setValue('New Lead')
-    //    ss.getSheetByName.getRange('H4').setValue(600)
+    if (listingAgent){
+      ss.getSheetByName.getRange('H4').setValue(600)
+    }
     ss.getSheetByName('Raw Data').getRange('I4').setValue(source)
-    //  ss.getSheetByName.getRange('J4').setValue()
+    ss.getSheetByName('Raw Data').getRange('J4').setValue("=Y4")
     ss.getSheetByName('Raw Data').getRange('K4').setValue(buyerAgent)
     ss.getSheetByName('Raw Data').getRange('L4').setValue('Open')
     ss.getSheetByName('Raw Data').getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
@@ -413,9 +415,11 @@ function updateAgentSS(){
     newWarmLeads.getRange('E4').setValue(buyerEmail)
     newWarmLeads.getRange('F4').setValue(listingAgent)
     newWarmLeads.getRange('G4').setValue('New Lead')
-    //    newWarmLeads.getRange('H4').setValue(600)
+    if (listingAgent){
+      newWarmLeads.getRange('H4').setValue(600)
+    }
     newWarmLeads.getRange('I4').setValue(source)
-    //  newWarmLeads.getRange('J4').setValue()
+    newWarmLeads.getRange('J4').setValue("=Y4")
     newWarmLeads.getRange('K4').setValue(buyerAgent)
     newWarmLeads.getRange('L4').setValue('Open')
     newWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
