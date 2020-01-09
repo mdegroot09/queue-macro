@@ -13,4 +13,4 @@ function IR() {
   var date = spreadsheet.getRange('Q4').getValue()
   spreadsheet.getRange('Q4').setValue(date)
   spreadsheet.getRange('A4').activate()
-};
+}

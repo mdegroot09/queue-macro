@@ -144,8 +144,11 @@ function redoFormulas(zip){
   var ss = SpreadsheetApp.getActive();
   
   // clear radius filter if active
-  if (ss.getActiveSheet().getFilter().getColumnFilterCriteria(7)){
+  if (ss.getActiveSheet().getFilter()){
     ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  }
+  else {
+    ss.getActiveSheet().getRange('D13:I24').createFilter()
   }
   
   // clear dropdown
@@ -279,14 +282,30 @@ function redoFilter() {
 
 function clearFilters() {
   var ss = SpreadsheetApp.getActive();
-  ss.getActiveSheet().getFilter().remove();
   
-  // clear column h cells
-  ss.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
+//  try {
+    // clear filter
+  if (ss.getActiveSheet().getFilter()){
+    ss.getActiveSheet().getFilter().remove();
+  }
+//  } 
   
-  // clear dropdown
-  ss.getRange('E8').clear({contentsOnly: true})
-  agentCellTurnGray()
+//  catch(e){
+//    // create filter
+//    ss.getRange('D13:I24').createFilter(); 
+//    
+//    // clear filter
+//    ss.getActiveSheet().getFilter().remove();
+//  }
+  
+//  finally {
+    // clear column h cells
+    ss.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
+    
+    // clear dropdown
+    ss.getRange('E8').clear({contentsOnly: true})
+    agentCellTurnGray()
+//  }
 };
 
 function copyNames(){
@@ -344,7 +363,7 @@ function assignAgent(){
     ss.getSheetByName('Raw Data').getRange('F4').setValue(listingAgent)
     ss.getSheetByName('Raw Data').getRange('G4').setValue('New Lead')
     if (listingAgent){
-      ss.getSheetByName.getRange('H4').setValue(600)
+      ss.getSheetByName('Raw Data').getRange('H4').setValue(600)
     }
     ss.getSheetByName('Raw Data').getRange('I4').setValue(source)
     ss.getSheetByName('Raw Data').getRange('J4').setValue("=Y4")
@@ -370,7 +389,12 @@ function assignAgent(){
     ss.getRange('G14:G24').clear({contentsOnly: true})
     
     // clear the miles radius filter
-    ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+    if (ss.getActiveSheet().getFilter()){
+      ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+    }
+    else {
+      ss.getActiveSheet().getRange('D13:I24').createFilter()
+    }
     
     // Sort Last Lead Received from oldest to youngest
     ss.getActiveSheet().getFilter().sort(8, true);
@@ -413,8 +437,17 @@ function updateAgentSS(){
     //  newWarmLeads.getRange('C4').setValue()
     newWarmLeads.getRange('D4').setValue(buyerPhone)
     newWarmLeads.getRange('E4').setValue(buyerEmail)
+    
+    // Set dropdown for the Listing Agent
+    newWarmLeads.getRange('F4').setDataValidation(SpreadsheetApp.newDataValidation().setAllowInvalid(true)
+      .requireValueInRange(ss.getRange('Setting!$A$4:$A'), true).build());
     newWarmLeads.getRange('F4').setValue(listingAgent)
+    
+    // Set dropdown for the Stage
+    newWarmLeads.getRange('G4').setDataValidation(SpreadsheetApp.newDataValidation().setAllowInvalid(true)
+      .requireValueInRange(ss.getRange('Setting!$E$4:$E'), true).build());
     newWarmLeads.getRange('G4').setValue('New Lead')
+    
     if (listingAgent){
       newWarmLeads.getRange('H4').setValue(600)
     }
@@ -581,7 +614,14 @@ function clearParameters() {
   ss.getRange('E6').setValue(20)
   ss.getRange('E8').clear({contentsOnly: true})
   ss.getRange('G14:G24').clear({contentsOnly: true})
-  ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  
+  if (ss.getActiveSheet().getFilter()){
+    ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
+  }
+  else {
+    ss.getActiveSheet().getRange('D13:I24').createFilter()
+  }
+  
   //  MailApp.sendEmail('mike.degroot@homie.com', 'test', 'This is a test email')
   agentCellTurnOrange()
 }
