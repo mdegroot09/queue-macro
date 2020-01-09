@@ -283,29 +283,17 @@ function redoFilter() {
 function clearFilters() {
   var ss = SpreadsheetApp.getActive();
   
-//  try {
-    // clear filter
+  // clear filter
   if (ss.getActiveSheet().getFilter()){
     ss.getActiveSheet().getFilter().remove();
   }
-//  } 
+
+  // clear column h cells
+  ss.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
   
-//  catch(e){
-//    // create filter
-//    ss.getRange('D13:I24').createFilter(); 
-//    
-//    // clear filter
-//    ss.getActiveSheet().getFilter().remove();
-//  }
-  
-//  finally {
-    // clear column h cells
-    ss.getRange('L1:L25').clear({contentsOnly: true, skipFilteredRows: false});
-    
-    // clear dropdown
-    ss.getRange('E8').clear({contentsOnly: true})
-    agentCellTurnGray()
-//  }
+  // clear dropdown
+  ss.getRange('E8').clear({contentsOnly: true})
+  agentCellTurnGray()
 };
 
 function copyNames(){
