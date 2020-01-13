@@ -148,7 +148,7 @@ function redoFormulas(zip){
     ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   }
   else {
-    ss.getActiveSheet().getRange('D13:I24').createFilter()
+    ss.getActiveSheet().getRange('D13:I26').createFilter()
   }
   
   // clear dropdown
@@ -167,6 +167,8 @@ function redoFormulas(zip){
   ss.getRange('Y22').setValue("=zipIt(F22,E5)")
   ss.getRange('Y23').setValue("=zipIt(F23,E5)")
   ss.getRange('Y24').setValue("=zipIt(F24,E5)")
+  ss.getRange('Y25').setValue("=zipIt(F25,E5)")
+  ss.getRange('Y26').setValue("=zipIt(F26,E5)")
   
   ss.getRange('Z14').setValue("=zipIt(E5,F14)")
   ss.getRange('Z15').setValue("=zipIt(E5,F15)")
@@ -179,6 +181,8 @@ function redoFormulas(zip){
   ss.getRange('Z22').setValue("=zipIt(E5,F22)")
   ss.getRange('Z23').setValue("=zipIt(E5,F23)")
   ss.getRange('Z24').setValue("=zipIt(E5,F24)")
+  ss.getRange('Z25').setValue("=zipIt(E5,F25)")
+  ss.getRange('Z26').setValue("=zipIt(E5,F26)")
   
   // Display value that isn't an error
   ss.getRange('G14').setValue("=IFERROR(Y14,Z14)")
@@ -192,6 +196,8 @@ function redoFormulas(zip){
   ss.getRange('G22').setValue("=IFERROR(Y22,Z22)")
   ss.getRange('G23').setValue("=IFERROR(Y23,Z23)")
   ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
+  ss.getRange('G25').setValue("=IFERROR(Y25,Z25)")
+  ss.getRange('G26').setValue("=IFERROR(Y26,Z26)")
   
 //  if (ss.getRange('Y14').getValue() !== "#ERROR!"){
 //    ss.getRange('G14').setValue(ss.getRange('Y14').getValue())
@@ -265,7 +271,7 @@ function redoFilter() {
   
   // Recreate filter
   var ss = SpreadsheetApp.getActive();
-  ss.getRange('D13:I24').createFilter();
+  ss.getRange('D13:I26').createFilter();
   
   // Get Radius in E6
   var val = ss.getRange('E6').getValue()
@@ -374,14 +380,14 @@ function assignAgent(){
     // clear city, zip, and miles distances for each agent
     ss.getRange('E4:E5').clear({contentsOnly: true})
     ss.getRange('E6').setValue(20)
-    ss.getRange('G14:G24').clear({contentsOnly: true})
+    ss.getRange('G14:G26').clear({contentsOnly: true})
     
     // clear the miles radius filter
     if (ss.getActiveSheet().getFilter()){
       ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
     }
     else {
-      ss.getActiveSheet().getRange('D13:I24').createFilter()
+      ss.getActiveSheet().getRange('D13:I26').createFilter()
     }
     
     // Sort Last Lead Received from oldest to youngest
@@ -601,13 +607,13 @@ function clearParameters() {
   ss.getRange('E4:E5').clear({contentsOnly: true})
   ss.getRange('E6').setValue(20)
   ss.getRange('E8').clear({contentsOnly: true})
-  ss.getRange('G14:G24').clear({contentsOnly: true})
+  ss.getRange('G14:G26').clear({contentsOnly: true})
   
   if (ss.getActiveSheet().getFilter()){
     ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   }
   else {
-    ss.getActiveSheet().getRange('D13:I24').createFilter()
+    ss.getActiveSheet().getRange('D13:I26').createFilter()
   }
   
   //  MailApp.sendEmail('mike.degroot@homie.com', 'test', 'This is a test email')
