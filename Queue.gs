@@ -184,20 +184,52 @@ function redoFormulas(zip){
   ss.getRange('Z25').setValue("=zipIt(E5,F25)")
   ss.getRange('Z26').setValue("=zipIt(E5,F26)")
   
-  // Display value that isn't an error
-  ss.getRange('G14').setValue("=IFERROR(Y14,Z14)")
-  ss.getRange('G15').setValue("=IFERROR(Y15,Z15)")
-  ss.getRange('G16').setValue("=IFERROR(Y16,Z16)")
-  ss.getRange('G17').setValue("=IFERROR(Y17,Z17)")
-  ss.getRange('G18').setValue("=IFERROR(Y18,Z18)")
-  ss.getRange('G19').setValue("=IFERROR(Y19,Z19)")
-  ss.getRange('G20').setValue("=IFERROR(Y20,Z20)")
-  ss.getRange('G21').setValue("=IFERROR(Y21,Z21)")
-  ss.getRange('G22').setValue("=IFERROR(Y22,Z22)")
-  ss.getRange('G23').setValue("=IFERROR(Y23,Z23)")
-  ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
-  ss.getRange('G25').setValue("=IFERROR(Y25,Z25)")
-  ss.getRange('G26').setValue("=IFERROR(Y26,Z26)")
+  // If agent name background isn't red, display value that isn't an error 
+  if (ss.getRange('D14').getBackground() !== '#f4cccc'){
+    ss.getRange('G14').setValue("=IFERROR(Y14,Z14)")
+  } else {ss.getRange('G14').setValue("")}
+  if (ss.getRange('D15').getBackground() !== '#f4cccc'){
+    ss.getRange('G15').setValue("=IFERROR(Y15,Z15)")
+  } else {ss.getRange('G15').setValue("")}
+  if (ss.getRange('D16').getBackground() !== '#f4cccc'){
+    ss.getRange('G16').setValue("=IFERROR(Y16,Z16)")
+  } else {ss.getRange('G16').setValue("")}
+  if (ss.getRange('D17').getBackground() !== '#f4cccc'){
+    ss.getRange('G17').setValue("=IFERROR(Y17,Z17)")
+  } else {ss.getRange('G17').setValue("")}
+  if (ss.getRange('D18').getBackground() !== '#f4cccc'){
+    ss.getRange('G18').setValue("=IFERROR(Y18,Z18)")
+  } else {ss.getRange('G18').setValue("")}
+  if (ss.getRange('D19').getBackground() !== '#f4cccc'){
+    ss.getRange('G19').setValue("=IFERROR(Y19,Z19)")
+  } else {ss.getRange('G19').setValue("")}
+  if (ss.getRange('D20').getBackground() !== '#f4cccc'){
+    ss.getRange('G20').setValue("=IFERROR(Y20,Z20)")
+  } else {ss.getRange('G20').setValue("")}
+  if (ss.getRange('D21').getBackground() !== '#f4cccc'){
+    ss.getRange('G21').setValue("=IFERROR(Y21,Z21)")
+  } else {ss.getRange('G21').setValue("")}
+  if (ss.getRange('D22').getBackground() !== '#f4cccc'){
+    ss.getRange('G22').setValue("=IFERROR(Y22,Z22)")
+  } else {ss.getRange('G22').setValue("")}
+  if (ss.getRange('D23').getBackground() !== '#f4cccc'){
+    ss.getRange('G23').setValue("=IFERROR(Y23,Z23)")
+  } else {ss.getRange('G23').setValue("")}
+  if (ss.getRange('D24').getBackground() !== '#f4cccc'){
+    ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
+  } else {ss.getRange('G24').setValue("")}
+//  ss.getRange('G15').setValue("=IFERROR(Y15,Z15)")
+//  ss.getRange('G16').setValue("=IFERROR(Y16,Z16)")
+//  ss.getRange('G17').setValue("=IFERROR(Y17,Z17)")
+//  ss.getRange('G18').setValue("=IFERROR(Y18,Z18)")
+//  ss.getRange('G19').setValue("=IFERROR(Y19,Z19)")
+//  ss.getRange('G20').setValue("=IFERROR(Y20,Z20)")
+//  ss.getRange('G21').setValue("=IFERROR(Y21,Z21)")
+//  ss.getRange('G22').setValue("=IFERROR(Y22,Z22)")
+//  ss.getRange('G23').setValue("=IFERROR(Y23,Z23)")
+//  ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
+//  ss.getRange('G25').setValue("=IFERROR(Y25,Z25)")
+//  ss.getRange('G26').setValue("=IFERROR(Y26,Z26)")
   
 }
 
