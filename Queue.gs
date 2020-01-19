@@ -148,7 +148,7 @@ function redoFormulas(zip){
     ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   }
   else {
-    ss.getActiveSheet().getRange('D13:I26').createFilter()
+    ss.getActiveSheet().getRange('D13:I25').createFilter()
   }
   
   // clear dropdown
@@ -168,7 +168,7 @@ function redoFormulas(zip){
   ss.getRange('Y23').setValue("=zipIt(F23,E5)")
   ss.getRange('Y24').setValue("=zipIt(F24,E5)")
   ss.getRange('Y25').setValue("=zipIt(F25,E5)")
-  ss.getRange('Y26').setValue("=zipIt(F26,E5)")
+//  ss.getRange('Y26').setValue("=zipIt(F26,E5)")
   
   ss.getRange('Z14').setValue("=zipIt(E5,F14)")
   ss.getRange('Z15').setValue("=zipIt(E5,F15)")
@@ -182,7 +182,7 @@ function redoFormulas(zip){
   ss.getRange('Z23').setValue("=zipIt(E5,F23)")
   ss.getRange('Z24').setValue("=zipIt(E5,F24)")
   ss.getRange('Z25').setValue("=zipIt(E5,F25)")
-  ss.getRange('Z26').setValue("=zipIt(E5,F26)")
+//  ss.getRange('Z26').setValue("=zipIt(E5,F26)")
   
   // If agent name background isn't red, display value that isn't an error 
   if (ss.getRange('D14').getBackground() !== '#f4cccc'){
@@ -218,18 +218,12 @@ function redoFormulas(zip){
   if (ss.getRange('D24').getBackground() !== '#f4cccc'){
     ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
   } else {ss.getRange('G24').setValue("")}
-//  ss.getRange('G15').setValue("=IFERROR(Y15,Z15)")
-//  ss.getRange('G16').setValue("=IFERROR(Y16,Z16)")
-//  ss.getRange('G17').setValue("=IFERROR(Y17,Z17)")
-//  ss.getRange('G18').setValue("=IFERROR(Y18,Z18)")
-//  ss.getRange('G19').setValue("=IFERROR(Y19,Z19)")
-//  ss.getRange('G20').setValue("=IFERROR(Y20,Z20)")
-//  ss.getRange('G21').setValue("=IFERROR(Y21,Z21)")
-//  ss.getRange('G22').setValue("=IFERROR(Y22,Z22)")
-//  ss.getRange('G23').setValue("=IFERROR(Y23,Z23)")
-//  ss.getRange('G24').setValue("=IFERROR(Y24,Z24)")
-//  ss.getRange('G25').setValue("=IFERROR(Y25,Z25)")
-//  ss.getRange('G26').setValue("=IFERROR(Y26,Z26)")
+  if (ss.getRange('D25').getBackground() !== '#f4cccc'){
+    ss.getRange('G25').setValue("=IFERROR(Y25,Z25)")
+  } else {ss.getRange('G25').setValue("")}
+//  if (ss.getRange('D26').getBackground() !== '#f4cccc'){
+//    ss.getRange('G26').setValue("=IFERROR(Y26,Z26)")
+//  } else {ss.getRange('G26').setValue("")}
   
 }
 
@@ -238,7 +232,7 @@ function redoFilter() {
   
   // Recreate filter
   var ss = SpreadsheetApp.getActive();
-  ss.getRange('D13:I26').createFilter();
+  ss.getRange('D13:I25').createFilter();
   
   // Get Radius in E6
   var val = ss.getRange('E6').getValue()
@@ -347,14 +341,14 @@ function assignAgent(){
     // clear city, zip, and miles distances for each agent
     ss.getRange('E4:E5').clear({contentsOnly: true})
     ss.getRange('E6').setValue(20)
-    ss.getRange('G14:G26').clear({contentsOnly: true})
+    ss.getRange('G14:G25').clear({contentsOnly: true})
     
     // clear the miles radius filter
     if (ss.getActiveSheet().getFilter()){
       ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
     }
     else {
-      ss.getActiveSheet().getRange('D13:I26').createFilter()
+      ss.getActiveSheet().getRange('D13:I25').createFilter()
     }
     
     // Sort Last Lead Received from oldest to youngest
@@ -574,13 +568,13 @@ function clearParameters() {
   ss.getRange('E4:E5').clear({contentsOnly: true})
   ss.getRange('E6').setValue(20)
   ss.getRange('E8').clear({contentsOnly: true})
-  ss.getRange('G14:G26').clear({contentsOnly: true})
+  ss.getRange('G14:G25').clear({contentsOnly: true})
   
   if (ss.getActiveSheet().getFilter()){
     ss.getActiveSheet().getFilter().removeColumnFilterCriteria(7)
   }
   else {
-    ss.getActiveSheet().getRange('D13:I26').createFilter()
+    ss.getActiveSheet().getRange('D13:I25').createFilter()
   }
   
   //  MailApp.sendEmail('mike.degroot@homie.com', 'test', 'This is a test email')
