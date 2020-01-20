@@ -401,7 +401,18 @@ function updateAgentSS(){
     // Set dropdown for the Stage
     newWarmLeads.getRange('G4').setDataValidation(SpreadsheetApp.newDataValidation().setAllowInvalid(true)
       .requireValueInRange(ss.getRange('Setting!$E$4:$E'), true).build());
-    newWarmLeads.getRange('G4').setValue('New Lead')
+    
+    var stage = ''
+    
+    // If agent sheet id is for "Other Agents", say "Warm Lead"; Otherwise, say "New Lead"
+    if (id === '1HHuqqbnmW1ihOJDkQW7tfppNovoeELtifjrhSm-Yf1U'){
+      stage = 'Warm Lead'
+    } 
+    else {
+      stage = 'New Lead'
+    }
+    
+    newWarmLeads.getRange('G4').setValue(stage)
     
     if (listingAgent){
       newWarmLeads.getRange('H4').setValue(600)
