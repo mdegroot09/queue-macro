@@ -447,9 +447,6 @@ function getAgentSheet(buyerAgent){
   else if (buyerAgent === 'Eric Nelson'){
     return '1SQU6zAsGGvbWaeX1C1AYdHhh37HZB9ADA1aSo075pCw'
   }
-  else if (buyerAgent === 'Jake Richins'){
-    return '1m46W2QJNyehTyd8sm_yLX2aCXd1NzkIk3AVtcZrNESY'
-  }
   else if (buyerAgent === 'Jamie Johnson'){
     return '1pie4IfWLlLLxZzR4EMXQpbf58LcBEiUIJTnNQ8YceX0'
   }
