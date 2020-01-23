@@ -311,7 +311,7 @@ function assignAgent(){
     
     ss.getSheetByName('Raw Data').insertRowsBefore(ss.getSheetByName('Raw Data').getRange('4:4').getRow(), 1);  
     ss.getSheetByName('Raw Data').getRange('A4').setValue(buyerName)
-    //  ss.getSheetByName.getRange('B4').setValue()
+    ss.getSheetByName('Raw Data').getRange('B4').setValue('=IFS(IFERROR(VLOOKUP(K4,Setting!C:C,1,FALSE),"OTHER TEAM") = "OTHER TEAM", "OTHER TEAM",IFERROR(VLOOKUP(A4,\'All Data\'!A:A,1,FALSE),"MISSING") = "MISSING", "MISSING",VLOOKUP(A4,\'All Data\'!A:A,1,FALSE) <> "", "")')
     //  ss.getSheetByName.getRange('C4').setValue()
     ss.getSheetByName('Raw Data').getRange('D4').setValue(buyerPhone)
     ss.getSheetByName('Raw Data').getRange('E4').setValue(buyerEmail)
