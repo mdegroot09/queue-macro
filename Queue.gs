@@ -418,7 +418,7 @@ function updateAgentSS(){
       newWarmLeads.getRange('H4').setValue(600)
     }
     newWarmLeads.getRange('I4').setValue(source)
-    newWarmLeads.getRange('J4').setValue("=Y4")
+    newWarmLeads.getRange('J4').setValue('=IF(Z4 <> "", Z4, Y4)')
     newWarmLeads.getRange('K4').setValue(buyerAgent)
     newWarmLeads.getRange('L4').setValue('Open')
     newWarmLeads.getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
