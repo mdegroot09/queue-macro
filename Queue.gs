@@ -12,7 +12,6 @@ function zipIt(zip1, zip2) {
     zip2 = 84123
   }
   
-  
   // 1st Zip Code API call
   
   // Get lat and lon of zip from zippopotam.us API
@@ -587,4 +586,30 @@ function clearParameters() {
   
   //  MailApp.sendEmail('mike.degroot@homie.com', 'test', 'This is a test email')
   agentCellTurnOrange()
+}
+
+function makeBackRed(cell){
+  var ss = SpreadsheetApp.getActive()
+  var name = ss.getSheetByName('Agent Data').getRange(cell).getValue()
+  
+  var row
+  var agents = ss.getSheetByName('Queue').getRange('D14:D').getValues()
+  agents = agents.filter(function(agent, i){
+    if (agent && agent === name){
+      row = i + 14
+    }
+    return agent && agent === name
+  })
+  
+  if (row){
+    if (ss.getSheetByName('Queue').getRange('D' + row).getBackground() === '#f4cccc'){
+      return true
+    }
+    else {
+      return false 
+    }
+  }
+  else {
+    return false 
+  }
 }
