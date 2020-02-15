@@ -323,7 +323,7 @@ function assignAgent(){
     ss.getSheetByName('Raw Data').getRange('J4').setValue("=Y4")
     ss.getSheetByName('Raw Data').getRange('K4').setValue(buyerAgent)
     ss.getSheetByName('Raw Data').getRange('L4').setValue('Open')
-    ss.getSheetByName('Raw Data').getRange('O4').setFormula('=IF(B4="","",VLOOKUP(B4,Setting!A:B,2,false))')
+    ss.getSheetByName('Raw Data').getRange('O4').setFormula('=IF(A4="","",VLOOKUP(F4,Setting!A:B,2,false))')
     ss.getSheetByName('Raw Data').getRange('P4').setValue(tags)
     ss.getSheetByName('Raw Data').getRange('Q4').setFormula('=IF(J4="","",IFS(J4="TBD","TBD",MONTH(J4)=1,"January",MONTH(J4)=2,"February",MONTH(J4)=3,"March",MONTH(J4)=4,"April",MONTH(J4)=5,"May",MONTH(J4)=6,"June",MONTH(J4)=7,"July",MONTH(J4)=8,"August",MONTH(J4)=9,"September",MONTH(J4)=10,"October",MONTH(J4)=11,"November",MONTH(J4)=12,"December"))');
     ss.getSheetByName('Raw Data').getRange('R4').setFormula('=IF(J4="","",IF(J4="TBD","TBD",year(J4)))');
