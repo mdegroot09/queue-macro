@@ -446,7 +446,7 @@ function getAgentSheet(buyerAgent){
   else if (buyerAgent === 'Eric Nelson'){
     return '1SQU6zAsGGvbWaeX1C1AYdHhh37HZB9ADA1aSo075pCw'
   }
-  else if (buyerAgent === 'Jamie Johnson'){
+  else if (buyerAgent === 'Dale Gunderson'){
     return '1pie4IfWLlLLxZzR4EMXQpbf58LcBEiUIJTnNQ8YceX0'
   }
   else if (buyerAgent === 'Jeremy Doggett'){
