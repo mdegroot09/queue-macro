@@ -614,11 +614,9 @@ function makeBackRed(cell){
   }
 }
 
-function getBackground(){
+function getBackground(row){
   var ss = SpreadsheetApp.getActive()
-  var dataRow = ss.getSheetByName('Agent Data').getActiveCell().getRow()
-  var queueRow = ss.getSheetByName('Agent Data').getRange('I' + dataRow).getValue()
-  var background = ss.getSheetByName('Queue').getRange('D' + queueRow).getBackground()
+  var background = ss.getSheetByName('Queue').getRange('D' + row).getBackground()
   if (background == '#f4cccc'){
     return false
   }
