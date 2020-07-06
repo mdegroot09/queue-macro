@@ -464,7 +464,7 @@ function getAgentSheet(buyerAgent){
   else if (buyerAgent === 'Mike Pembroke'){
     return '1TIf55QXFo1QO73_qIKS7pGAPcQG49xNy0i0fNdxryXI'
   }
-  else if (buyerAgent === 'Taryn Nielsen'){
+  else if (buyerAgent === 'Jeff Hogg'){
     return '1tTjhvHG2Ut-eMlK8s0c_Q4wBotoZ9BDOOnTr5DOqUZg'
   }
   else if (buyerAgent === 'Wyatt Koeven'){
